@@ -2,6 +2,7 @@ import { BookOpen, Calendar, HandHeart, Info, MapPin, Moon, Sun, Map as MapIcon 
 import React, { useState, useEffect } from 'react';
 import { hajjData, DayGuide, Prayer, Action } from './data';
 import { HajjMap } from './components/HajjMap';
+import { ArticleView } from './components/ArticleView';
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
@@ -98,6 +99,7 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
 export default function App() {
   const [blessingVisible, setBlessingVisible] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [activeView, setActiveView] = useState<'guide' | 'articles'>('guide');
 
   useEffect(() => {
     if (isDark) {
@@ -118,9 +120,8 @@ export default function App() {
           <span className="text-lg font-semibold tracking-widest uppercase text-gray-900 dark:text-[#f2f2f2]">Hajj Guide</span>
         </div>
         <div className="flex items-center justify-center gap-6 sm:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-white/40">
-          <a href="#overview" className="hover:text-[#c9a227] transition-colors cursor-pointer">Overview</a>
-          <a href="#rites" className="hover:text-[#c9a227] transition-colors cursor-pointer">Rites</a>
-          <a href="#post-hajj" className="hover:text-[#c9a227] transition-colors cursor-pointer">Post-Hajj</a>
+          <button onClick={() => { setActiveView('guide'); window.scrollTo(0,0); }} className={`${activeView === 'guide' ? 'text-[#c9a227]' : 'hover:text-[#c9a227]'} transition-colors cursor-pointer uppercase tracking-widest font-bold`}>Guide</button>
+          <button onClick={() => { setActiveView('articles'); window.scrollTo(0,0); }} className={`${activeView === 'articles' ? 'text-[#c9a227]' : 'hover:text-[#c9a227]'} transition-colors cursor-pointer uppercase tracking-widest font-bold`}>Articles (প্রবন্ধ)</button>
           
           <button 
             onClick={() => setIsDark(!isDark)} 
@@ -132,8 +133,10 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div id="overview" className="relative border-b border-black/10 dark:border-white/10 pt-24 md:pt-32">  
+      {activeView === 'guide' ? (
+        <>
+          {/* Hero Section */}
+          <div id="overview" className="relative border-b border-black/10 dark:border-white/10 pt-24 md:pt-32">  
         <div className="max-w-7xl mx-auto px-8 md:px-12 py-16 md:py-24 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -243,6 +246,10 @@ export default function App() {
           
         </div>
       </main>
+      </>
+      ) : (
+        <ArticleView />
+      )}
 
       {/* Footer */}
       <footer className="border-t border-black/10 dark:border-white/10 px-8 md:px-12 py-16 bg-white dark:bg-[#0c0c0c] max-w-7xl mx-auto transition-colors duration-300">
