@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { hajjData, DayGuide, Prayer, Action } from './data';
 import { HajjMap } from './components/HajjMap';
 import { ArticleView } from './components/ArticleView';
-import { FatwaView } from './components/FatwaView';
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
@@ -100,7 +99,7 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
 export default function App() {
   const [blessingVisible, setBlessingVisible] = useState(false);
   const [isDark, setIsDark] = useState(true);
-  const [activeView, setActiveView] = useState<'guide' | 'articles' | 'fatwa'>('guide');
+  const [activeView, setActiveView] = useState<'guide' | 'articles'>('guide');
 
   useEffect(() => {
     if (isDark) {
@@ -120,14 +119,23 @@ export default function App() {
           </div>
           <span className="text-lg font-semibold tracking-widest uppercase text-gray-900 dark:text-[#f2f2f2]">Hajj Guide</span>
         </div>
-        <div className="flex items-center justify-center gap-6 sm:gap-10 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-white/40">
-          <button onClick={() => { setActiveView('guide'); window.scrollTo(0,0); }} className={`${activeView === 'guide' ? 'text-[#c9a227]' : 'hover:text-[#c9a227]'} transition-colors cursor-pointer uppercase tracking-widest font-bold`}>Guide</button>
-          <button onClick={() => { setActiveView('articles'); window.scrollTo(0,0); }} className={`${activeView === 'articles' ? 'text-[#c9a227]' : 'hover:text-[#c9a227]'} transition-colors cursor-pointer uppercase tracking-widest font-bold`}>Articles (প্রবন্ধ)</button>
-          <button onClick={() => { setActiveView('fatwa'); window.scrollTo(0,0); }} className={`${activeView === 'fatwa' ? 'text-[#c9a227]' : 'hover:text-[#c9a227]'} transition-colors cursor-pointer uppercase tracking-widest font-bold`}>Fatwa (ফতোয়া)</button>
+        <div className="flex items-center justify-center gap-4 sm:gap-6 font-bold uppercase tracking-wider text-sm md:text-base">
+          <button 
+            onClick={() => { setActiveView('guide'); window.scrollTo(0,0); }} 
+            className={`${activeView === 'guide' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'guide' ? 'border-[#c9a227]' : 'border-transparent'}`}
+          >
+            Guide
+          </button>
+          <button 
+            onClick={() => { setActiveView('articles'); window.scrollTo(0,0); }} 
+            className={`${activeView === 'articles' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'articles' ? 'border-[#c9a227]' : 'border-transparent'}`}
+          >
+            Articles (প্রবন্ধ)
+          </button>
           
           <button 
             onClick={() => setIsDark(!isDark)} 
-            className="p-2 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] transition-colors text-gray-900 dark:text-white"
+            className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] transition-colors text-gray-900 dark:text-white ml-2 sm:ml-4"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -249,10 +257,8 @@ export default function App() {
         </div>
       </main>
       </>
-      ) : activeView === 'articles' ? (
-        <ArticleView />
       ) : (
-        <FatwaView />
+        <ArticleView />
       )}
 
       {/* Footer */}
