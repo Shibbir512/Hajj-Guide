@@ -4,7 +4,7 @@ import fatwasData from '../data/fatwas_data.json';
 
 interface Fatwa {
   Year: number;
-  Month: string;
+  Month: string | number;
   Question: string;
   Answer: string;
   Category: string;
