@@ -1,0 +1,11 @@
+[
+  {
+    "Year": 2024,
+    "Month": "01",
+    "Question": "এটি একটি নমুনা ফতোয়া। আপনার আসল ডেটা এখানে বসাতে হবে।",
+    "Answer": "আপনার <code>fatwas_data.json</code> ফাইলটি এই <code>src/data/</code> ফোল্ডারে রিপ্লেস করুন।",
+    "Category": "বিবিধ (অন্যান্য)",
+    "Subcategory": "সাধারণ",
+    "Link": "https://www.alkawsar.com/"
+  }
+]
