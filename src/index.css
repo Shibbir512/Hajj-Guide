@@ -1,6 +1,14 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400..800&display=swap');
+
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Baloo Da 2", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Baloo Da 2", ui-serif, Georgia, serif;
+}
 
 html {
   scroll-behavior: smooth;
+  font-family: "Baloo Da 2", sans-serif;
 }
