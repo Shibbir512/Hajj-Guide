@@ -13,6 +13,7 @@ interface Fatwa {
 }
 
 export const FatwaView: React.FC = () => {
+  const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('All');
@@ -22,24 +23,49 @@ export const FatwaView: React.FC = () => {
 
   const fatwas = fatwasData as Fatwa[];
 
+  // Debounce search input to avoid freezing UI on every keystroke
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchTerm(searchInput);
+      setCurrentPage(1);
+      setExpandedId(0);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchInput]);
+
   // Get unique categories
   const categories = useMemo(() => {
-    const cats = new Set(fatwas.map(f => f.Category));
+    const cats = new Set(fatwas.filter(f => f.Category).map(f => f.Category));
     return ['All', ...Array.from(cats)];
   }, [fatwas]);
 
   // Get unique subcategories based on selected category
   const subcategories = useMemo(() => {
     if (selectedCategory === 'All') return ['All'];
-    const subcats = new Set(fatwas.filter(f => f.Category === selectedCategory).map(f => f.Subcategory));
+    const subcats = new Set(
+      fatwas.filter(f => f.Category === selectedCategory && f.Subcategory).map(f => f.Subcategory)
+    );
     return ['All', ...Array.from(subcats)];
   }, [selectedCategory, fatwas]);
 
+  // Helper to safely strip HTML and make lower case for searching
+  const getSearchableText = (html?: string) => {
+    if (!html) return '';
+    return html.replace(/(<([^>]+)>)/gi, '').toLowerCase();
+  };
+
   // Filtered data
   const filteredFatwas = useMemo(() => {
+    const searchLower = searchTerm.trim().toLowerCase();
+    
     return fatwas.filter(fatwa => {
-      const matchesSearch = fatwa.Question.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                            fatwa.Answer.toLowerCase().includes(searchTerm.toLowerCase());
+      let matchesSearch = true;
+      if (searchLower) {
+        const qText = getSearchableText(fatwa.Question);
+        const aText = getSearchableText(fatwa.Answer);
+        matchesSearch = qText.includes(searchLower) || aText.includes(searchLower);
+      }
+      
       const matchesCat = selectedCategory === 'All' || fatwa.Category === selectedCategory;
       const matchesSubCat = selectedSubcategory === 'All' || fatwa.Subcategory === selectedSubcategory;
       
@@ -82,8 +108,8 @@ export const FatwaView: React.FC = () => {
             type="text" 
             placeholder="ফতোয়া খুঁজুন... (যেমন: নামায, ওযু)" 
             className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 focus:border-[#c9a227] dark:focus:border-[#c9a227] outline-none text-gray-900 dark:text-white transition-colors"
-            value={searchTerm}
-            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); setExpandedId(0); }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
         
@@ -134,9 +160,24 @@ export const FatwaView: React.FC = () => {
                 
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-3">
-                    <span className="bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/60 px-3 py-1 text-xs md:text-sm rounded-md">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCategory(fatwa.Category);
+                        setSelectedSubcategory(
+                          fatwa.Subcategory !== 'Unknown' && fatwa.Subcategory !== 'All' 
+                            ? fatwa.Subcategory 
+                            : 'All'
+                        );
+                        setCurrentPage(1);
+                        setExpandedId(0);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="bg-gray-100 hover:bg-[#c9a227]/20 dark:bg-white/5 dark:hover:bg-[#c9a227]/20 text-gray-600 hover:text-[#c9a227] dark:text-white/60 dark:hover:text-[#c9a227] px-3 py-1 text-xs md:text-sm rounded-md transition-colors cursor-pointer text-left"
+                      title={`${fatwa.Category} ক্যাটাগরিতে ফিল্টার করুন`}
+                    >
                       {fatwa.Subcategory !== 'Unknown' && fatwa.Subcategory !== 'All' ? fatwa.Subcategory : fatwa.Category}
-                    </span>
+                    </button>
                     {expandedId === index ? (
                       <ChevronUp className="text-[#c9a227] w-5 h-5 flex-shrink-0" />
                     ) : (
