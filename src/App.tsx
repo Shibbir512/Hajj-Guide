@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { hajjData, DayGuide, Prayer, Action } from './data';
 import { HajjMap } from './components/HajjMap';
 import { ArticleView } from './components/ArticleView';
+import { FatwaView } from './components/FatwaView';
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
@@ -99,7 +100,7 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
 export default function App() {
   const [blessingVisible, setBlessingVisible] = useState(false);
   const [isDark, setIsDark] = useState(true);
-  const [activeView, setActiveView] = useState<'guide' | 'articles'>('guide');
+  const [activeView, setActiveView] = useState<'guide' | 'articles' | 'fatwa'>('guide');
 
   useEffect(() => {
     if (isDark) {
@@ -131,6 +132,12 @@ export default function App() {
             className={`${activeView === 'articles' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'articles' ? 'border-[#c9a227]' : 'border-transparent'}`}
           >
             Articles (প্রবন্ধ)
+          </button>
+          <button 
+            onClick={() => { setActiveView('fatwa'); window.scrollTo(0,0); }} 
+            className={`${activeView === 'fatwa' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'fatwa' ? 'border-[#c9a227]' : 'border-transparent'}`}
+          >
+            Fatwa (ফতোয়া)
           </button>
           
           <button 
@@ -257,8 +264,10 @@ export default function App() {
         </div>
       </main>
       </>
-      ) : (
+      ) : activeView === 'articles' ? (
         <ArticleView />
+      ) : (
+        <FatwaView />
       )}
 
       {/* Footer */}
