@@ -63,7 +63,10 @@ export const FatwaView: React.FC = () => {
       if (searchLower) {
         const qText = getSearchableText(fatwa.Question);
         const aText = getSearchableText(fatwa.Answer);
-        matchesSearch = qText.includes(searchLower) || aText.includes(searchLower);
+        
+        // Split search input into keywords and ensure all keywords are present
+        const keywords = searchLower.split(/\s+/).filter(Boolean);
+        matchesSearch = keywords.every(keyword => qText.includes(keyword) || aText.includes(keyword));
       }
       
       const matchesCat = selectedCategory === 'All' || fatwa.Category === selectedCategory;
