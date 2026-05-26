@@ -1,6 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown } from 'lucide-react';
-import fatwasData from '../data/fatwas_data.json';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2 } from 'lucide-react';
 
 interface Fatwa {
   Year: number;
@@ -22,7 +21,20 @@ export const FatwaView: React.FC = () => {
   const [isPending, startTransition] = React.useTransition();
   const itemsPerPage = 10;
 
-  const fatwas = fatwasData as Fatwa[];
+  const [fatwas, setFatwas] = useState<Fatwa[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    import('../data/fatwas_data.json')
+      .then((m) => {
+        setFatwas(m.default as Fatwa[]);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to load fatwas data:', err);
+        setIsLoading(false);
+      });
+  }, []);
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -199,6 +211,15 @@ export const FatwaView: React.FC = () => {
     setCurrentPage(1);
     setExpandedId(0);
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 md:px-12 py-32 relative z-20 flex flex-col items-center justify-center min-h-[50vh] animate-pulse">
+        <Loader2 className="w-10 h-10 text-[#c9a227] animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-white/60 font-serif text-lg">ফতোয়া ডাটাবেজ লোড করা হচ্ছে...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-12 py-12 md:py-20 relative z-20">
