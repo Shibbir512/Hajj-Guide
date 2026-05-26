@@ -37,7 +37,7 @@ export const ArticleView: React.FC = () => {
   const totalPages = Math.ceil(articles.length / articlesPerPage);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 md:px-12 py-32 relative z-20 min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-20 relative z-20 min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center gap-4 mb-12 border-b border-black/10 dark:border-white/10 pb-6">
         <div className="p-3 bg-[#c9a227]/10 rounded-full">
           <BookOpen className="w-6 h-6 text-[#c9a227]" />

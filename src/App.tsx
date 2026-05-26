@@ -1,9 +1,10 @@
-import { BookOpen, Calendar, HandHeart, Info, MapPin, Moon, Sun, Map as MapIcon } from 'lucide-react';
+import { BookOpen, Calendar, HandHeart, Info, MapPin, Moon, Sun, Map as MapIcon, Star } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { hajjData, DayGuide, Prayer, Action } from './data';
 import { HajjMap } from './components/HajjMap';
 import { ArticleView } from './components/ArticleView';
 import { FatwaView } from './components/FatwaView';
+import { BookmarkView } from './components/BookmarkView';
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
@@ -14,14 +15,32 @@ const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Ic
   </div>
 );
 
-const PrayerCard: React.FC<{ prayer: Prayer }> = ({ prayer }) => (
+const PrayerCard: React.FC<{ 
+  prayer: Prayer;
+  isBookmarked: boolean;
+  onToggleBookmark: () => void;
+}> = ({ prayer, isBookmarked, onToggleBookmark }) => (
   <div className="bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 p-6 mb-6 group hover:border-[#c9a227]/50 transition-colors relative overflow-hidden shadow-sm dark:shadow-none">
     <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-[#c9a227] opacity-0 group-hover:opacity-20 transition-opacity"></div>
     <div className="flex items-start justify-between mb-5 border-b border-black/10 dark:border-white/10 pb-4">
-      <h3 className="font-serif text-[#c9a227] flex items-center gap-3 text-xl">
+      <h3 className="font-serif text-[#c9a227] flex items-center gap-3 text-xl pr-8">
         <HandHeart className="w-5 h-5 opacity-80" />
         <span className="leading-snug">{prayer.scenario}</span>
       </h3>
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleBookmark();
+        }}
+        className={`p-2 transition-colors duration-200 border rounded-md cursor-pointer ${
+          isBookmarked 
+            ? 'text-[#c9a227] bg-[#c9a227]/10 border-[#c9a227]/30 hover:bg-[#c9a227]/20'
+            : 'text-gray-400 dark:text-white/30 hover:text-[#c9a227] hover:bg-[#c9a227]/5 border-black/10 dark:border-white/10'
+        }`}
+        title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
+      >
+        <Star className={`w-4 h-4 ${isBookmarked ? 'fill-[#c9a227]' : ''}`} />
+      </button>
     </div>
     
     <div className="space-y-5">
@@ -44,18 +63,44 @@ const PrayerCard: React.FC<{ prayer: Prayer }> = ({ prayer }) => (
   </div>
 );
 
-const ActionItem: React.FC<{ action: Action }> = ({ action }) => (
-  <div className="flex gap-4 mb-5 items-start">
-    <div className="mt-1">
-      <span className="inline-block border border-[#c9a227]/40 text-[#c9a227] px-2 py-1 text-[10px] tracking-widest font-bold whitespace-nowrap">
-        {action.type}
-      </span>
+const ActionItem: React.FC<{ 
+  action: Action;
+  isBookmarked: boolean;
+  onToggleBookmark: () => void;
+}> = ({ action, isBookmarked, onToggleBookmark }) => (
+  <div className="flex gap-4 mb-5 items-start justify-between group w-full">
+    <div className="flex gap-4 items-start flex-1">
+      <div className="mt-1">
+        <span className="inline-block border border-[#c9a227]/40 text-[#c9a227] px-2 py-1 text-[10px] tracking-widest font-bold whitespace-nowrap">
+          {action.type}
+        </span>
+      </div>
+      <p className="text-gray-600 dark:text-white/70 text-[15px] leading-relaxed">{action.description}</p>
     </div>
-    <p className="text-gray-600 dark:text-white/70 text-[15px] leading-relaxed">{action.description}</p>
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        onToggleBookmark();
+      }}
+      className={`p-1.5 rounded transition-colors cursor-pointer ${
+        isBookmarked 
+          ? 'text-[#c9a227] hover:bg-[#c9a227]/10' 
+          : 'text-gray-300 dark:text-white/10 hover:text-[#c9a227] hover:bg-black/5 dark:hover:bg-white/5'
+      }`}
+      title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
+    >
+      <Star className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#c9a227]' : ''}`} />
+    </button>
   </div>
 );
 
-const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
+const DaySection: React.FC<{ 
+  data: DayGuide;
+  bookmarkedDuas: string[];
+  bookmarkedActions: string[];
+  onToggleDuaBookmark: (scenario: string) => void;
+  onToggleActionBookmark: (description: string) => void;
+}> = ({ data, bookmarkedDuas, bookmarkedActions, onToggleDuaBookmark, onToggleActionBookmark }) => (
   <div className="bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 overflow-hidden mb-12 relative">
     <div className="bg-white dark:bg-[#0c0c0c] p-8 md:p-10 border-b border-black/10 dark:border-white/10 relative overflow-hidden group">
       <div className="absolute inset-0 bg-gradient-to-t from-slate-100 dark:from-[#0a0a0a] via-transparent to-transparent opacity-60 pointer-events-none"></div>
@@ -79,7 +124,12 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
           <SectionHeader title="আমলসমূহ (Actions & Rites)" icon={MapPin} />
           <div className="space-y-2">
             {data.actions.map((action, idx) => (
-              <ActionItem key={idx} action={action} />
+              <ActionItem 
+                key={idx} 
+                action={action} 
+                isBookmarked={bookmarkedActions.includes(action.description)}
+                onToggleBookmark={() => onToggleActionBookmark(action.description)}
+              />
             ))}
           </div>
         </div>
@@ -88,7 +138,12 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
           <SectionHeader title="মাসনুন দোয়া (Prayers)" icon={BookOpen} />
           <div>
             {data.prayers.map((prayer, idx) => (
-              <PrayerCard key={idx} prayer={prayer} />
+              <PrayerCard 
+                key={idx} 
+                prayer={prayer} 
+                isBookmarked={bookmarkedDuas.includes(prayer.scenario)}
+                onToggleBookmark={() => onToggleDuaBookmark(prayer.scenario)}
+              />
             ))}
           </div>
         </div>
@@ -100,7 +155,43 @@ const DaySection: React.FC<{ data: DayGuide }> = ({ data }) => (
 export default function App() {
   const [blessingVisible, setBlessingVisible] = useState(false);
   const [isDark, setIsDark] = useState(true);
-  const [activeView, setActiveView] = useState<'guide' | 'articles' | 'fatwa'>('guide');
+  const [activeView, setActiveView] = useState<'guide' | 'articles' | 'fatwa' | 'bookmarks'>('guide');
+
+  const [bookmarkedDuas, setBookmarkedDuas] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('bookmarked_duas') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  const [bookmarkedActions, setBookmarkedActions] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('bookmarked_actions') || '[]');
+    } catch {
+      return [];
+    }
+  });
+
+  const toggleDuaBookmark = (scenario: string) => {
+    setBookmarkedDuas(prev => {
+      const updated = prev.includes(scenario)
+        ? prev.filter(s => s !== scenario)
+        : [...prev, scenario];
+      localStorage.setItem('bookmarked_duas', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const toggleActionBookmark = (description: string) => {
+    setBookmarkedActions(prev => {
+      const updated = prev.includes(description)
+        ? prev.filter(d => d !== description)
+        : [...prev, description];
+      localStorage.setItem('bookmarked_actions', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   useEffect(() => {
     if (isDark) {
@@ -113,47 +204,110 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-gray-900 dark:text-[#f2f2f2] font-sans selection:bg-[#c9a227]/30 selection:text-[#c9a227] pb-24 overflow-x-hidden transition-colors duration-300">
       {/* Navigation */}
-      <nav className="flex flex-col sm:flex-row items-center justify-between px-8 md:px-12 py-6 border-b border-black/10 dark:border-white/10 gap-6 fixed top-0 w-full z-50 bg-white/90 dark:bg-[#0a0a0a]/90 backdrop-blur-md transition-colors duration-300">
-        <div className="flex items-center gap-4">
-          <div className="w-6 h-6 bg-[#c9a227] rounded-sm flex items-center justify-center rotate-45">
-            <div className="w-2 h-2 bg-white dark:bg-[#0a0a0a] rounded-sm transition-colors duration-300"></div>
+      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0a0a0a]/95 border-b border-black/5 dark:border-white/5 transition-colors duration-300 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center justify-between w-full md:w-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-tr from-[#c9a227] to-[#e5be49] rounded-lg flex items-center justify-center shadow-sm shadow-[#c9a227]/20">
+                <div className="w-2.5 h-2.5 bg-white dark:bg-[#0a0a0a] rounded-sm rotate-45 transition-colors duration-300"></div>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-bold tracking-widest uppercase text-gray-950 dark:text-[#f2f2f2] leading-none">Hajj Guide</span>
+                <span className="text-[10px] text-gray-400 dark:text-white/40 font-medium tracking-normal mt-0.5">সহজ হজ্জ ও ওমরার সফরসঙ্গী</span>
+              </div>
+            </div>
+
+            {/* Quick Actions for Mobile */}
+            <div className="flex items-center gap-2 md:hidden">
+              <button 
+                onClick={() => setIsDark(!isDark)} 
+                className="p-2 border border-black/5 dark:border-white/5 bg-white dark:bg-[#121212] rounded-full text-gray-600 dark:text-[#f2f2f2] hover:border-[#c9a227]/30 transition-all cursor-pointer shadow-sm"
+                aria-label="Toggle theme"
+              >
+                {isDark ? <Sun className="w-3.5 h-3.5 text-[#c9a227]" /> : <Moon className="w-3.5 h-3.5 text-[#c9a227]" />}
+              </button>
+            </div>
           </div>
-          <span className="text-lg font-semibold tracking-widest uppercase text-gray-900 dark:text-[#f2f2f2]">Hajj Guide</span>
-        </div>
-        <div className="flex items-center justify-center gap-4 sm:gap-6 font-bold uppercase tracking-wider text-sm md:text-base">
-          <button 
-            onClick={() => { setActiveView('guide'); window.scrollTo(0,0); }} 
-            className={`${activeView === 'guide' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'guide' ? 'border-[#c9a227]' : 'border-transparent'}`}
-          >
-            Guide
-          </button>
-          <button 
-            onClick={() => { setActiveView('articles'); window.scrollTo(0,0); }} 
-            className={`${activeView === 'articles' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'articles' ? 'border-[#c9a227]' : 'border-transparent'}`}
-          >
-            Articles (প্রবন্ধ)
-          </button>
-          <button 
-            onClick={() => { setActiveView('fatwa'); window.scrollTo(0,0); }} 
-            className={`${activeView === 'fatwa' ? 'bg-[#c9a227] text-white shadow-md' : 'text-gray-500 dark:text-white/50 hover:text-[#c9a227] hover:bg-[#c9a227]/10'} px-6 py-2.5 rounded-full transition-all cursor-pointer border ${activeView === 'fatwa' ? 'border-[#c9a227]' : 'border-transparent'}`}
-          >
-            Fatwa (ফতোয়া)
-          </button>
-          
-          <button 
-            onClick={() => setIsDark(!isDark)} 
-            className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] transition-colors text-gray-900 dark:text-white ml-2 sm:ml-4"
-            aria-label="Toggle theme"
-          >
-            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
+
+          <div className="flex items-center gap-3 w-full md:w-auto overflow-hidden">
+            {/* The Outer Strip Bar Inspired by Screenshot */}
+            <div className="w-full md:w-auto bg-[#1b1911] border border-[#c9a227]/30 dark:border-[#c9a227]/20 p-1 md:p-1.5 rounded-full shadow-lg shadow-[#c9a227]/5">
+              <div 
+                className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth max-w-full"
+                style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
+                <button 
+                  onClick={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
+                    activeView === 'guide' 
+                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>হজ্জ গাইড</span>
+                </button>
+
+                <button 
+                  onClick={() => { setActiveView('articles'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
+                    activeView === 'articles' 
+                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Info className="w-4 h-4" />
+                  <span>প্রবন্ধসমূহ</span>
+                </button>
+
+                <button 
+                  onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-[#f5f5f5]/70 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
+                    activeView === 'fatwa' 
+                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <HandHeart className="w-4 h-4" />
+                  <span>জিজ্ঞাসা ও ফতোয়া</span>
+                </button>
+
+                <button 
+                  onClick={() => { setActiveView('bookmarks'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
+                    activeView === 'bookmarks' 
+                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <Star className={`w-3.5 h-3.5 ${activeView === 'bookmarks' ? 'fill-current text-white' : ''}`} />
+                  <span>প্রিয় তালিকা ({bookmarkedDuas.length + bookmarkedActions.length})</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Actions for Desktop */}
+            <div className="hidden md:flex items-center">
+              <button 
+                onClick={() => setIsDark(!isDark)} 
+                className="p-2 border border-black/5 dark:border-white/5 bg-white dark:bg-[#121212] rounded-full hover:border-[#c9a227] hover:bg-[#c9a227]/5 text-gray-700 dark:text-white transition-all cursor-pointer shadow-sm ml-2"
+                aria-label="Toggle theme"
+              >
+                {isDark ? <Sun className="w-4 h-4 text-[#c9a227]" /> : <Moon className="w-4 h-4 text-[#c9a227]" />}
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
 
       {activeView === 'guide' ? (
         <>
           {/* Hero Section */}
-          <div id="overview" className="relative border-b border-black/10 dark:border-white/10 pt-24 md:pt-32">  
+          <div id="overview" className="relative border-b border-black/10 dark:border-white/10">  
         <div className="max-w-7xl mx-auto px-8 md:px-12 py-16 md:py-24 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -245,9 +399,22 @@ export default function App() {
         </div>
 
         <div className="space-y-8">
-          <DaySection data={hajjData.makkahArrival} />
+          <DaySection 
+            data={hajjData.makkahArrival} 
+            bookmarkedDuas={bookmarkedDuas}
+            bookmarkedActions={bookmarkedActions}
+            onToggleDuaBookmark={toggleDuaBookmark}
+            onToggleActionBookmark={toggleActionBookmark}
+          />
           {hajjData.days.map((day, idx) => (
-            <DaySection key={idx} data={day} />
+            <DaySection 
+              key={idx} 
+              data={day} 
+              bookmarkedDuas={bookmarkedDuas}
+              bookmarkedActions={bookmarkedActions}
+              onToggleDuaBookmark={toggleDuaBookmark}
+              onToggleActionBookmark={toggleActionBookmark}
+            />
           ))}
           
           <div id="post-hajj" className="py-16 flex items-center justify-center relative scroll-mt-24">
@@ -258,16 +425,36 @@ export default function App() {
             </div>
           </div>
           
-          <DaySection data={hajjData.tatawafElWida} />
-          <DaySection data={hajjData.madinahZiyarat} />
+          <DaySection 
+            data={hajjData.tatawafElWida} 
+            bookmarkedDuas={bookmarkedDuas}
+            bookmarkedActions={bookmarkedActions}
+            onToggleDuaBookmark={toggleDuaBookmark}
+            onToggleActionBookmark={toggleActionBookmark}
+          />
+          <DaySection 
+            data={hajjData.madinahZiyarat} 
+            bookmarkedDuas={bookmarkedDuas}
+            bookmarkedActions={bookmarkedActions}
+            onToggleDuaBookmark={toggleDuaBookmark}
+            onToggleActionBookmark={toggleActionBookmark}
+          />
           
         </div>
       </main>
       </>
       ) : activeView === 'articles' ? (
         <ArticleView />
-      ) : (
+      ) : activeView === 'fatwa' ? (
         <FatwaView />
+      ) : (
+        <BookmarkView 
+          bookmarkedDuas={bookmarkedDuas}
+          bookmarkedActions={bookmarkedActions}
+          onToggleDuaBookmark={toggleDuaBookmark}
+          onToggleActionBookmark={toggleActionBookmark}
+          onNavigateToGuide={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        />
       )}
 
       {/* Footer */}
