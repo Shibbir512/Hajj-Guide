@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2 } from 'lucide-react';
+import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2, Copy, Check } from 'lucide-react';
 
 interface Fatwa {
   Year: number;
@@ -18,7 +18,20 @@ export const FatwaView: React.FC = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
   const [isPending, startTransition] = React.useTransition();
+
+  const handleCopy = (fatwa: Fatwa, index: number) => {
+    const qText = fatwa.Question.replace(/<[^>]*>?/gm, '').trim();
+    const aText = fatwa.Answer.replace(/<[^>]*>?/gm, '').trim();
+    
+    const textToCopy = `প্রশ্ন: ${qText}\n\nউত্তর: ${aText}\n\nউৎস: মাসিক আলকাউসার\nলিংক: ${fatwa.Link}`;
+    
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopiedId(index);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
   const itemsPerPage = 10;
 
   const [fatwas, setFatwas] = useState<Fatwa[]>([]);
@@ -378,7 +391,21 @@ export const FatwaView: React.FC = () => {
                         dangerouslySetInnerHTML={{ __html: fatwa.Answer }}
                       />
 
-                      <div className="border-t border-dashed border-gray-200 dark:border-white/10 pt-4 flex justify-end">
+                      <div className="border-t border-dashed border-gray-200 dark:border-white/10 pt-4 flex justify-between items-center">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCopy(fatwa, globalIndex);
+                          }}
+                          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#c9a227] dark:text-white/40 dark:hover:text-[#c9a227] transition-colors px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5"
+                          title="কপি করুন"
+                        >
+                          {copiedId === globalIndex ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+                          <span className={copiedId === globalIndex ? 'text-green-500 font-medium' : ''}>
+                            {copiedId === globalIndex ? 'কপি হয়েছে' : 'কপি করুন'}
+                          </span>
+                        </button>
+
                         <a href={fatwa.Link} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-[#c9a227] dark:text-white/40 dark:hover:text-[#c9a227] transition-colors">
                           সূত্র: মাসিক আলকাউসার
                         </a>
