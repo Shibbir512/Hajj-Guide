@@ -323,7 +323,11 @@ export const FatwaView: React.FC = () => {
             {/* Question Section */}
             <div 
               className="p-6 md:p-8 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#111] transition-colors"
-              onClick={() => setExpandedId(expandedId === globalIndex ? null : globalIndex)}
+              onClick={() => {
+                const selection = window.getSelection();
+                if (selection && selection.toString().length > 0) return;
+                setExpandedId(expandedId === globalIndex ? null : globalIndex);
+              }}
             >
               <div className="flex items-start gap-4 md:gap-6">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-[#fcfaf2] dark:bg-[#c9a227]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
