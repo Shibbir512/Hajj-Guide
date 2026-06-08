@@ -275,18 +275,6 @@ export default function App() {
                   <HandHeart className="w-4 h-4" />
                   <span>জিজ্ঞাসা ও ফতোয়া</span>
                 </button>
-
-                <button 
-                  onClick={() => { setActiveView('bookmarks'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
-                  className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
-                    activeView === 'bookmarks' 
-                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Star className={`w-3.5 h-3.5 ${activeView === 'bookmarks' ? 'fill-current text-white' : ''}`} />
-                  <span>প্রিয় তালিকা ({bookmarkedDuas.length + bookmarkedActions.length})</span>
-                </button>
               </div>
             </div>
 

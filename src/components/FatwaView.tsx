@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2, Copy, Check } from 'lucide-react';
+import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2 } from 'lucide-react';
 
 interface Fatwa {
   Year: number;
@@ -17,21 +17,8 @@ export const FatwaView: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(0);
   const [isPending, startTransition] = React.useTransition();
-
-  const handleCopy = (fatwa: Fatwa, index: number) => {
-    const qText = fatwa.Question.replace(/<[^>]*>?/gm, '').trim();
-    const aText = fatwa.Answer.replace(/<[^>]*>?/gm, '').trim();
-    
-    const textToCopy = `প্রশ্ন: ${qText}\n\nউত্তর: ${aText}\n\nউৎস: মাসিক আলকাউসার\nলিংক: ${fatwa.Link}`;
-    
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopiedId(index);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  };
   const itemsPerPage = 10;
 
   const [fatwas, setFatwas] = useState<Fatwa[]>([]);
@@ -222,7 +209,7 @@ export const FatwaView: React.FC = () => {
     setSelectedCategory(e.target.value);
     setSelectedSubcategory('All');
     setCurrentPage(1);
-    setExpandedId(null);
+    setExpandedId(0);
   };
 
   if (isLoading) {
@@ -256,7 +243,8 @@ export const FatwaView: React.FC = () => {
           <input 
             type="text" 
             placeholder="ফতোয়া খুঁজুন বা প্রশ্ন লিখুন... (যেমন: নামায, ওযু)" 
-            className="w-full pl-4 pr-[4.5rem] py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 focus:border-[#c9a227] dark:focus:border-[#c9a227] outline-none text-gray-900 dark:text-white transition-colors"            value={searchInput}
+            className="w-full pl-4 pr-[4.5rem] py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 focus:border-[#c9a227] dark:focus:border-[#c9a227] outline-none text-gray-900 dark:text-white transition-colors"
+            value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -282,11 +270,11 @@ export const FatwaView: React.FC = () => {
             <Search className="w-5 h-5" />
           </button>
         </div>
-
+        
         <div className="flex gap-4 w-full md:w-auto">
           <div className="relative w-full md:w-48">
             <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#c9a227] w-4 h-4" />
-            <select
+            <select 
               className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 focus:border-[#c9a227] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer"
               value={selectedCategory}
               onChange={handleCategoryChange}
@@ -297,7 +285,7 @@ export const FatwaView: React.FC = () => {
 
           {selectedCategory !== 'All' && (
             <div className="relative w-full md:w-48">
-              <select
+              <select 
                 className="w-full px-4 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 focus:border-[#c9a227] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer"
                 value={selectedSubcategory}
                 onChange={(e) => { setSelectedSubcategory(e.target.value); setCurrentPage(1); }}
@@ -315,19 +303,13 @@ export const FatwaView: React.FC = () => {
 
       {/* Fatwa Cards */}
       <div className="space-y-6">
-        {currentFatwas.map((fatwa, index) => {
-          const globalIndex = (currentPage - 1) * itemsPerPage + index;
-          return (
-            <div key={globalIndex} className="bg-white dark:bg-[#0c0c0c] border border-[#c9a227] rounded-xl overflow-hidden shadow-sm">
+        {currentFatwas.map((fatwa, index) => (
+          <div key={index} className="bg-white dark:bg-[#0c0c0c] border border-[#c9a227] rounded-xl overflow-hidden shadow-sm">
             
             {/* Question Section */}
             <div 
               className="p-6 md:p-8 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#111] transition-colors"
-              onClick={() => {
-                const selection = window.getSelection();
-                if (selection && selection.toString().length > 0) return;
-                setExpandedId(expandedId === globalIndex ? null : globalIndex);
-              }}
+              onClick={() => setExpandedId(expandedId === index ? null : index)}
             >
               <div className="flex items-start gap-4 md:gap-6">
                 <div className="w-10 h-10 md:w-12 md:h-12 bg-[#fcfaf2] dark:bg-[#c9a227]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
@@ -347,7 +329,7 @@ export const FatwaView: React.FC = () => {
                               : 'All'
                           );
                           setCurrentPage(1);
-                          setExpandedId(null);
+                          setExpandedId(0);
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                         className="bg-gray-100 hover:bg-[#c9a227]/20 dark:bg-white/5 dark:hover:bg-[#c9a227]/20 text-gray-600 hover:text-[#c9a227] dark:text-white/60 dark:hover:text-[#c9a227] px-3 py-1 text-xs md:text-sm rounded-md transition-colors cursor-pointer text-left"
@@ -369,59 +351,44 @@ export const FatwaView: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    {expandedId === globalIndex ? (
+                    {expandedId === index ? (
                       <ChevronUp className="text-[#c9a227] w-5 h-5 flex-shrink-0" />
                     ) : (
                       <ChevronDown className="text-[#c9a227] w-5 h-5 flex-shrink-0" />
                     )}
                   </div>
-
+                  
                   <h3 className="text-lg md:text-xl font-serif text-gray-900 dark:text-white leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: fatwa.Question }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Answer Section */}
+            {expandedId === index && (
+              <div className="border-t border-gray-100 dark:border-white/5 p-6 md:p-8 pt-6 bg-white dark:bg-[#0c0c0c]">
+                <div className="flex items-start gap-4 md:gap-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-gray-500 dark:text-white/50 font-serif text-lg md:text-xl">উ</span>
+                  </div>
+                  
+                  <div className="flex-1">
+                    <div 
+                      className="text-gray-700 dark:text-[#f2f2f2]/80 text-[15px] md:text-base leading-relaxed mb-6"
+                      dangerouslySetInnerHTML={{ __html: fatwa.Answer }}
+                    />
+                    
+                    <div className="border-t border-dashed border-gray-200 dark:border-white/10 pt-4 flex justify-end">
+                      <a href={fatwa.Link} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-[#c9a227] dark:text-white/40 dark:hover:text-[#c9a227] transition-colors">
+                        সূত্র: মাসিক আলকাউসার
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Answer Section */}
-              {expandedId === globalIndex && (
-                <div className="border-t border-gray-100 dark:border-white/5 p-6 md:p-8 pt-6 bg-white dark:bg-[#0c0c0c]">
-                  <div className="flex items-start gap-4 md:gap-6">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-gray-500 dark:text-white/50 font-serif text-lg md:text-xl">উ</span>
-                    </div>
-
-                    <div className="flex-1">
-                      <div
-                        className="text-gray-700 dark:text-[#f2f2f2]/80 text-[15px] md:text-base leading-relaxed mb-6"
-                        dangerouslySetInnerHTML={{ __html: fatwa.Answer }}
-                      />
-
-                      <div className="border-t border-dashed border-gray-200 dark:border-white/10 pt-4 flex justify-between items-center">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopy(fatwa, globalIndex);
-                          }}
-                          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#c9a227] dark:text-white/40 dark:hover:text-[#c9a227] transition-colors px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5"
-                          title="কপি করুন"
-                        >
-                          {copiedId === globalIndex ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                          <span className={copiedId === globalIndex ? 'text-green-500 font-medium' : ''}>
-                            {copiedId === globalIndex ? 'কপি হয়েছে' : 'কপি করুন'}
-                          </span>
-                        </button>
-
-                        <a href={fatwa.Link} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-[#c9a227] dark:text-white/40 dark:hover:text-[#c9a227] transition-colors">
-                          সূত্র: মাসিক আলকাউসার
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )
-        })}
-
+            )}
+          </div>
+        ))}
+        
         {currentFatwas.length === 0 && (
           <div className="text-center py-20 bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10">
             <BookOpen className="w-12 h-12 text-gray-300 dark:text-white/20 mx-auto mb-4" />
@@ -433,11 +400,11 @@ export const FatwaView: React.FC = () => {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-4 mt-12">
-          <button onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); setExpandedId(null); }} disabled={currentPage === 1} className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white">
+          <button onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); setExpandedId(0); }} disabled={currentPage === 1} className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white">
             <ChevronLeft className="w-5 h-5" />
           </button>
           <span className="text-[10px] font-bold tracking-widest uppercase text-gray-500 dark:text-white/60">পেজ {currentPage} / {totalPages}</span>
-          <button onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); setExpandedId(null); }} disabled={currentPage === totalPages} className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white">
+          <button onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); setExpandedId(0); }} disabled={currentPage === totalPages} className="p-3 border border-black/10 dark:border-white/10 rounded-full hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white">
             <ChevronRight className="w-5 h-5" />
           </button>
         </div>
