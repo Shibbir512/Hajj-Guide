@@ -154,7 +154,7 @@ const DaySection: React.FC<{
 
 export default function App() {
   const [blessingVisible, setBlessingVisible] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   const [activeView, setActiveView] = useState<'guide' | 'articles' | 'fatwa' | 'bookmarks'>('guide');
 
   const [bookmarkedDuas, setBookmarkedDuas] = useState<string[]>(() => {
