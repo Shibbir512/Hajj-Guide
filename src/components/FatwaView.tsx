@@ -304,7 +304,7 @@ export const FatwaView: React.FC = () => {
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto px-4 md:px-12 py-32 relative z-20 flex flex-col items-center justify-center min-h-[50vh] animate-pulse">
-        <Loader2 className="w-10 h-10 text-[#c9a227] animate-spin mb-4" />
+        <Loader2 className="w-10 h-10 text-[#c48c48] animate-spin mb-4" />
         <p className="text-gray-600 dark:text-white/70 font-serif text-lg">মাসিক আল কাউসারের ফতোয়া ডাটাবেজ লোড করা হচ্ছে...</p>
       </div>
     );
@@ -314,15 +314,15 @@ export const FatwaView: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-8 md:py-14 relative z-20">
       
       {/* Header Banner */}
-      <div className="bg-gradient-to-br from-amber-500/10 via-white dark:via-[#0c0c0c] to-amber-500/5 dark:from-[#c9a227]/15 dark:to-[#0a0a0a] border border-[#c9a227]/30 rounded-2xl p-6 sm:p-10 mb-10 shadow-sm relative overflow-hidden">
-        <div className="absolute -right-8 -bottom-8 w-44 h-44 bg-[#c9a227]/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div className="bg-gradient-to-br from-amber-500/10 via-white dark:via-[#12242c] to-amber-500/5 dark:from-[#c48c48]/15 dark:to-[#0c1a20] border border-[#c48c48]/30 rounded-2xl p-6 sm:p-10 mb-10 shadow-sm relative overflow-hidden">
+        <div className="absolute -right-8 -bottom-8 w-44 h-44 bg-[#c48c48]/10 rounded-full blur-2xl pointer-events-none"></div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-gradient-to-tr from-[#c9a227] to-[#e5be49] rounded-2xl flex items-center justify-center text-white shadow-md shadow-[#c9a227]/20 flex-shrink-0">
+            <div className="w-14 h-14 bg-gradient-to-tr from-[#c48c48] to-[#deb37d] rounded-2xl flex items-center justify-center text-white shadow-md shadow-[#c48c48]/20 flex-shrink-0">
               <BookOpen className="w-7 h-7" />
             </div>
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c9a227]/15 text-[#c9a227] text-xs font-bold uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c48c48]/15 text-[#c48c48] text-xs font-bold uppercase tracking-wider mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>প্রামাণ্য শরয়ী সমাধান</span>
               </div>
@@ -335,9 +335,9 @@ export const FatwaView: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 self-start md:self-auto bg-white/80 dark:bg-black/40 backdrop-blur-sm border border-black/5 dark:border-white/10 px-4 py-3 rounded-xl">
+          <div className="flex items-center gap-3 self-start md:self-auto bg-white/80 dark:bg-black/40 backdrop-blur-sm border border-black/5 dark:border-[#22404c] px-4 py-3 rounded-xl">
             <div className="text-right">
-              <span className="block text-2xl font-bold font-serif text-[#c9a227] leading-none">
+              <span className="block text-2xl font-bold font-serif text-[#c48c48] leading-none">
                 {toBengaliNumber(fatwas.length)}
               </span>
               <span className="text-[11px] text-gray-500 dark:text-white/50 font-medium">সর্বমোট ফতোয়া</span>
@@ -357,7 +357,7 @@ export const FatwaView: React.FC = () => {
       <div className="mb-12">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <LayoutGrid className="w-5 h-5 text-[#c9a227]" />
+            <LayoutGrid className="w-5 h-5 text-[#c48c48]" />
             <h2 className="text-lg sm:text-xl font-serif font-bold text-gray-900 dark:text-white tracking-wide">
               বিষয়ভিত্তিক ক্যাটাগরি
             </h2>
@@ -365,7 +365,7 @@ export const FatwaView: React.FC = () => {
           {selectedCategory !== 'All' && (
             <button
               onClick={() => selectCategory('All')}
-              className="text-xs text-[#c9a227] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
+              className="text-xs text-[#c48c48] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>সকল ক্যাটাগরি দেখুন</span>
@@ -381,8 +381,8 @@ export const FatwaView: React.FC = () => {
             onClick={() => selectCategory('All')}
             className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
               selectedCategory === 'All'
-                ? 'bg-[#c9a227] text-white border-[#c9a227] shadow-md shadow-[#c9a227]/20 scale-[1.02]'
-                : 'bg-white dark:bg-[#0e0e0e] border-black/10 dark:border-white/10 hover:border-[#c9a227]/60 hover:bg-amber-50/50 dark:hover:bg-[#161616]'
+                ? 'bg-[#c48c48] text-white border-[#c48c48] shadow-md shadow-[#c48c48]/20 scale-[1.02]'
+                : 'bg-white dark:bg-[#12242c] border-black/10 dark:border-[#22404c] hover:border-[#c48c48]/60 hover:bg-amber-50/50 dark:hover:bg-[#161616]'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -411,8 +411,8 @@ export const FatwaView: React.FC = () => {
                 onClick={() => selectCategory(cat)}
                 className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
                   isSelected
-                    ? 'bg-[#c9a227] text-white border-[#c9a227] shadow-md shadow-[#c9a227]/20 scale-[1.02]'
-                    : 'bg-white dark:bg-[#0e0e0e] border-black/10 dark:border-white/10 hover:border-[#c9a227]/60 hover:bg-amber-50/50 dark:hover:bg-[#161616]'
+                    ? 'bg-[#c48c48] text-white border-[#c48c48] shadow-md shadow-[#c48c48]/20 scale-[1.02]'
+                    : 'bg-white dark:bg-[#12242c] border-black/10 dark:border-[#22404c] hover:border-[#c48c48]/60 hover:bg-amber-50/50 dark:hover:bg-[#161616]'
                 }`}
                 title={meta.description}
               >
@@ -421,7 +421,7 @@ export const FatwaView: React.FC = () => {
                   {isSelected && <CheckCircle2 className="w-4 h-4 text-white" />}
                 </div>
                 <div>
-                  <h3 className={`font-serif font-bold text-sm sm:text-base leading-tight group-hover:text-[#c9a227] ${
+                  <h3 className={`font-serif font-bold text-sm sm:text-base leading-tight group-hover:text-[#c48c48] ${
                     isSelected ? 'text-white group-hover:text-white' : 'text-gray-900 dark:text-white'
                   }`}>
                     {cat}
@@ -439,9 +439,9 @@ export const FatwaView: React.FC = () => {
 
         {/* Active Category Subcategories Chips */}
         {selectedCategory !== 'All' && subcategories.length > 1 && (
-          <div className="mt-5 p-4 bg-amber-50/60 dark:bg-[#141414] border border-[#c9a227]/20 rounded-xl">
+          <div className="mt-5 p-4 bg-amber-50/60 dark:bg-[#142831] border border-[#c48c48]/20 rounded-xl">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-bold text-[#c9a227] uppercase tracking-wider">
+              <span className="text-xs font-bold text-[#c48c48] uppercase tracking-wider">
                 🏷️ {selectedCategory} এর উপ-বিভাগসমূহ:
               </span>
             </div>
@@ -462,8 +462,8 @@ export const FatwaView: React.FC = () => {
                     }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                       isSubSelected
-                        ? 'bg-[#c9a227] text-white shadow-sm font-bold'
-                        : 'bg-white dark:bg-[#1e1e1e] text-gray-700 dark:text-white/80 border border-black/10 dark:border-white/10 hover:border-[#c9a227]/40'
+                        ? 'bg-[#c48c48] text-white shadow-sm font-bold'
+                        : 'bg-white dark:bg-[#1e1e1e] text-gray-700 dark:text-white/80 border border-black/10 dark:border-[#22404c] hover:border-[#c48c48]/40'
                     }`}
                   >
                     <span>{sub === 'All' ? `সকল ${selectedCategory}` : sub}</span>
@@ -482,12 +482,12 @@ export const FatwaView: React.FC = () => {
 
       {/* Search and Filter Section */}
       <div ref={resultsRef} className="scroll-mt-20">
-        <div className="bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 p-4 sm:p-6 mb-8 rounded-xl shadow-sm flex flex-col md:flex-row gap-4">
+        <div className="bg-white dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] p-4 sm:p-6 mb-8 rounded-xl shadow-sm flex flex-col md:flex-row gap-4">
           <div className="relative flex-1 flex">
             <input 
               type="text" 
               placeholder="ফতোয়া বা মাসআলা অনুসন্ধান করুন... (যেমন: নামাযে ভুল, ওযু, সেহরি, কসর)" 
-              className="w-full pl-4 pr-14 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-lg focus:border-[#c9a227] dark:focus:border-[#c9a227] outline-none text-gray-900 dark:text-white transition-colors"
+              className="w-full pl-4 pr-14 py-3 bg-slate-50 dark:bg-[#182f3a] border border-black/10 dark:border-[#22404c] rounded-lg focus:border-[#c48c48] dark:focus:border-[#c48c48] outline-none text-gray-900 dark:text-white transition-colors"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {
@@ -508,7 +508,7 @@ export const FatwaView: React.FC = () => {
                   setExpandedId(0);
                 });
               }}
-              className="absolute right-1 top-1 bottom-1 px-4 bg-[#c9a227] hover:bg-[#b39022] text-white rounded-md flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute right-1 top-1 bottom-1 px-4 bg-[#c48c48] hover:bg-[#a87132] text-white rounded-md flex items-center justify-center transition-colors cursor-pointer"
               title="অনুসন্ধান করুন"
             >
               <Search className="w-5 h-5" />
@@ -518,9 +518,9 @@ export const FatwaView: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             {/* Category Dropdown Filter */}
             <div className="relative w-full sm:w-48">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#c9a227] w-4 h-4 pointer-events-none" />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#c48c48] w-4 h-4 pointer-events-none" />
               <select 
-                className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-lg focus:border-[#c9a227] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer text-sm"
+                className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-[#182f3a] border border-black/10 dark:border-[#22404c] rounded-lg focus:border-[#c48c48] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer text-sm"
                 value={selectedCategory}
                 onChange={(e) => selectCategory(e.target.value)}
               >
@@ -537,7 +537,7 @@ export const FatwaView: React.FC = () => {
             {selectedCategory !== 'All' && subcategories.length > 1 && (
               <div className="relative w-full sm:w-48">
                 <select 
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 rounded-lg focus:border-[#c9a227] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 dark:bg-[#182f3a] border border-black/10 dark:border-[#22404c] rounded-lg focus:border-[#c48c48] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer text-sm"
                   value={selectedSubcategory}
                   onChange={(e) => { 
                     setSelectedSubcategory(e.target.value); 
@@ -571,9 +571,9 @@ export const FatwaView: React.FC = () => {
         {/* Results Count & Current Active Filters Summary */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
           <div className="text-gray-600 dark:text-white/60 font-medium">
-            সর্বমোট <strong className="text-[#c9a227] font-bold">{toBengaliNumber(filteredFatwas.length)}</strong> টি ফতোয়া পাওয়া গেছে
+            সর্বমোট <strong className="text-[#c48c48] font-bold">{toBengaliNumber(filteredFatwas.length)}</strong> টি ফতোয়া পাওয়া গেছে
             {selectedCategory !== 'All' && (
-              <span className="ml-2 inline-flex items-center gap-1 bg-[#c9a227]/10 text-[#c9a227] px-2.5 py-0.5 rounded-full text-xs font-semibold">
+              <span className="ml-2 inline-flex items-center gap-1 bg-[#c48c48]/10 text-[#c48c48] px-2.5 py-0.5 rounded-full text-xs font-semibold">
                 ক্যাটাগরি: {selectedCategory}
               </span>
             )}
@@ -605,7 +605,7 @@ export const FatwaView: React.FC = () => {
             return (
               <div 
                 key={index} 
-                className="bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 hover:border-[#c9a227]/60 rounded-xl overflow-hidden shadow-sm transition-all duration-200"
+                className="bg-white dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] hover:border-[#c48c48]/60 rounded-xl overflow-hidden shadow-sm transition-all duration-200"
               >
                 {/* Question Section */}
                 <div 
@@ -613,7 +613,7 @@ export const FatwaView: React.FC = () => {
                   onClick={() => setExpandedId(isExpanded ? null : index)}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-500/10 text-[#c9a227] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
+                    <div className="w-10 h-10 sm:w-11 sm:h-11 bg-amber-500/10 text-[#c48c48] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
                       প্র
                     </div>
                     
@@ -625,7 +625,7 @@ export const FatwaView: React.FC = () => {
                               e.stopPropagation();
                               selectCategory(fatwa.Category);
                             }}
-                            className="bg-[#c9a227]/10 hover:bg-[#c9a227]/20 text-[#c9a227] px-2.5 py-1 text-xs rounded-md font-semibold transition-colors cursor-pointer flex items-center gap-1"
+                            className="bg-[#c48c48]/10 hover:bg-[#c48c48]/20 text-[#c48c48] px-2.5 py-1 text-xs rounded-md font-semibold transition-colors cursor-pointer flex items-center gap-1"
                           >
                             <span>{meta?.icon || '📌'}</span>
                             <span>{fatwa.Category}</span>
@@ -645,9 +645,9 @@ export const FatwaView: React.FC = () => {
                         </div>
 
                         {isExpanded ? (
-                          <ChevronUp className="text-[#c9a227] w-5 h-5 flex-shrink-0" />
+                          <ChevronUp className="text-[#c48c48] w-5 h-5 flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="text-gray-400 dark:text-white/40 group-hover:text-[#c9a227] w-5 h-5 flex-shrink-0" />
+                          <ChevronDown className="text-gray-400 dark:text-white/40 group-hover:text-[#c48c48] w-5 h-5 flex-shrink-0" />
                         )}
                       </div>
                       
@@ -661,7 +661,7 @@ export const FatwaView: React.FC = () => {
 
                 {/* Answer Section */}
                 {isExpanded && (
-                  <div className="border-t border-black/5 dark:border-white/5 p-5 sm:p-8 bg-slate-50/50 dark:bg-[#111111]">
+                  <div className="border-t border-black/5 dark:border-white/5 p-5 sm:p-8 bg-slate-50/50 dark:bg-[#0c1a20]">
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 sm:w-11 sm:h-11 bg-green-500/10 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
                         উ
@@ -673,7 +673,7 @@ export const FatwaView: React.FC = () => {
                           dangerouslySetInnerHTML={{ __html: fatwa.Answer }}
                         />
                         
-                        <div className="border-t border-dashed border-gray-200 dark:border-white/10 pt-4 flex flex-wrap items-center justify-between gap-3">
+                        <div className="border-t border-dashed border-gray-200 dark:border-[#22404c] pt-4 flex flex-wrap items-center justify-between gap-3">
                           <span className="text-xs text-gray-400 dark:text-white/40">
                             মাসিক আল কাউসার প্রশ্নোত্তর ও ফতোয়া বিভাগ
                           </span>
@@ -682,7 +682,7 @@ export const FatwaView: React.FC = () => {
                               href={fatwa.Link} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-xs text-[#c9a227] hover:underline font-medium flex items-center gap-1"
+                              className="text-xs text-[#c48c48] hover:underline font-medium flex items-center gap-1"
                             >
                               <span>মূল সংখ্যা দেখুন</span>
                               <ChevronRight className="w-3.5 h-3.5" />
@@ -698,7 +698,7 @@ export const FatwaView: React.FC = () => {
           })}
           
           {currentFatwas.length === 0 && (
-            <div className="text-center py-20 bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 rounded-xl">
+            <div className="text-center py-20 bg-white dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] rounded-xl">
               <BookOpen className="w-12 h-12 text-gray-300 dark:text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-serif text-gray-700 dark:text-white/70 mb-2">কোনো ফতোয়া পাওয়া যায়নি</h3>
               <p className="text-sm text-gray-500 dark:text-white/50 max-w-sm mx-auto mb-4">
@@ -706,7 +706,7 @@ export const FatwaView: React.FC = () => {
               </p>
               <button
                 onClick={resetAllFilters}
-                className="px-5 py-2.5 bg-[#c9a227] text-white rounded-lg text-xs font-bold hover:bg-[#b39022] transition-colors cursor-pointer"
+                className="px-5 py-2.5 bg-[#c48c48] text-white rounded-lg text-xs font-bold hover:bg-[#a87132] transition-colors cursor-pointer"
               >
                 সব ফতোয়া দেখুন
               </button>
@@ -724,7 +724,7 @@ export const FatwaView: React.FC = () => {
                 if (resultsRef.current) resultsRef.current.scrollIntoView({ behavior: 'smooth' });
               }} 
               disabled={currentPage === 1} 
-              className="p-2.5 border border-black/10 dark:border-white/10 rounded-lg hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
+              className="p-2.5 border border-black/10 dark:border-[#22404c] rounded-lg hover:border-[#c48c48] dark:hover:border-[#c48c48] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
               title="পূর্ববর্তী পৃষ্ঠা"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -741,7 +741,7 @@ export const FatwaView: React.FC = () => {
                 if (resultsRef.current) resultsRef.current.scrollIntoView({ behavior: 'smooth' });
               }} 
               disabled={currentPage === totalPages} 
-              className="p-2.5 border border-black/10 dark:border-white/10 rounded-lg hover:border-[#c9a227] dark:hover:border-[#c9a227] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
+              className="p-2.5 border border-black/10 dark:border-[#22404c] rounded-lg hover:border-[#c48c48] dark:hover:border-[#c48c48] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
               title="পরবর্তী পৃষ্ঠা"
             >
               <ChevronRight className="w-5 h-5" />

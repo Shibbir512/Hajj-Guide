@@ -8,10 +8,10 @@ import { BookmarkView } from './components/BookmarkView';
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
-    <div className="text-[#c9a227]">
+    <div className="text-[#c48c48]">
       <Icon className="w-5 h-5" />
     </div>
-    <h2 className="text-lg font-serif text-gray-900 dark:text-[#f2f2f2] tracking-widest">{title}</h2>
+    <h2 className="text-lg font-serif text-gray-900 dark:text-[#f7eee1] tracking-widest">{title}</h2>
   </div>
 );
 
@@ -20,10 +20,10 @@ const PrayerCard: React.FC<{
   isBookmarked: boolean;
   onToggleBookmark: () => void;
 }> = ({ prayer, isBookmarked, onToggleBookmark }) => (
-  <div className="bg-white dark:bg-[#0c0c0c] border border-black/10 dark:border-white/10 p-6 mb-6 group hover:border-[#c9a227]/50 transition-colors relative overflow-hidden shadow-sm dark:shadow-none">
-    <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-[#c9a227] opacity-0 group-hover:opacity-20 transition-opacity"></div>
+  <div className="bg-white dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] p-6 mb-6 group hover:border-[#c48c48]/60 transition-colors relative overflow-hidden shadow-sm dark:shadow-none">
+    <div className="absolute top-0 right-0 w-16 h-16 border-t border-r border-[#c48c48] opacity-0 group-hover:opacity-30 transition-opacity"></div>
     <div className="flex items-start justify-between mb-5 border-b border-black/10 dark:border-white/10 pb-4">
-      <h3 className="font-serif text-[#c9a227] flex items-center gap-3 text-xl pr-8">
+      <h3 className="font-serif text-[#c48c48] flex items-center gap-3 text-xl pr-8">
         <HandHeart className="w-5 h-5 opacity-80" />
         <span className="leading-snug">{prayer.scenario}</span>
       </h3>
@@ -34,30 +34,30 @@ const PrayerCard: React.FC<{
         }}
         className={`p-2 transition-colors duration-200 border rounded-md cursor-pointer ${
           isBookmarked 
-            ? 'text-[#c9a227] bg-[#c9a227]/10 border-[#c9a227]/30 hover:bg-[#c9a227]/20'
-            : 'text-gray-400 dark:text-white/30 hover:text-[#c9a227] hover:bg-[#c9a227]/5 border-black/10 dark:border-white/10'
+            ? 'text-[#c48c48] bg-[#c48c48]/15 border-[#c48c48]/40 hover:bg-[#c48c48]/25'
+            : 'text-gray-400 dark:text-white/30 hover:text-[#c48c48] hover:bg-[#c48c48]/10 border-black/10 dark:border-white/10'
         }`}
         title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
       >
-        <Star className={`w-4 h-4 ${isBookmarked ? 'fill-[#c9a227]' : ''}`} />
+        <Star className={`w-4 h-4 ${isBookmarked ? 'fill-[#c48c48]' : ''}`} />
       </button>
     </div>
     
     <div className="space-y-5">
-      <p className="text-2xl leading-relaxed text-right font-serif text-gray-900 dark:text-[#f2f2f2] font-semibold" dir="rtl">
+      <p className="text-2xl leading-relaxed text-right font-serif text-gray-900 dark:text-[#f7eee1] font-semibold" dir="rtl">
         {prayer.arabic}
       </p>
       
       {prayer.pronunciation && (
-        <div className="bg-slate-50 dark:bg-[#1a1a1a] p-5 border border-black/5 dark:border-white/5">
+        <div className="bg-slate-50 dark:bg-[#182f3a] p-5 border border-black/5 dark:border-[#22404c]">
           <span className="text-[10px] font-bold text-gray-400 dark:text-white/40 uppercase tracking-widest mb-2 block">উচ্চারণ</span>
           <p className="text-gray-600 dark:text-white/70 text-[15px] leading-relaxed">{prayer.pronunciation}</p>
         </div>
       )}
       
-      <div className="bg-slate-50 dark:bg-[#1a1a1a] p-5 border-l-2 border-[#c9a227]">
-        <span className="text-[10px] font-bold text-[#c9a227] uppercase tracking-widest mb-2 block">অর্থ</span>
-        <p className="text-gray-700 dark:text-[#f2f2f2]/80 text-[15px] leading-relaxed">{prayer.meaning}</p>
+      <div className="bg-slate-50 dark:bg-[#182f3a] p-5 border-l-2 border-[#c48c48]">
+        <span className="text-[10px] font-bold text-[#c48c48] uppercase tracking-widest mb-2 block">অর্থ</span>
+        <p className="text-gray-700 dark:text-[#f7eee1]/80 text-[15px] leading-relaxed">{prayer.meaning}</p>
       </div>
     </div>
   </div>
@@ -71,7 +71,7 @@ const ActionItem: React.FC<{
   <div className="flex gap-4 mb-5 items-start justify-between group w-full">
     <div className="flex gap-4 items-start flex-1">
       <div className="mt-1">
-        <span className="inline-block border border-[#c9a227]/40 text-[#c9a227] px-2 py-1 text-[10px] tracking-widest font-bold whitespace-nowrap">
+        <span className="inline-block border border-[#c48c48]/50 text-[#c48c48] px-2 py-1 text-[10px] tracking-widest font-bold whitespace-nowrap bg-[#c48c48]/5 rounded-sm">
           {action.type}
         </span>
       </div>
@@ -84,12 +84,12 @@ const ActionItem: React.FC<{
       }}
       className={`p-1.5 rounded transition-colors cursor-pointer ${
         isBookmarked 
-          ? 'text-[#c9a227] hover:bg-[#c9a227]/10' 
-          : 'text-gray-300 dark:text-white/10 hover:text-[#c9a227] hover:bg-black/5 dark:hover:bg-white/5'
+          ? 'text-[#c48c48] hover:bg-[#c48c48]/10' 
+          : 'text-gray-300 dark:text-white/10 hover:text-[#c48c48] hover:bg-black/5 dark:hover:bg-white/5'
       }`}
       title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
     >
-      <Star className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#c9a227]' : ''}`} />
+      <Star className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#c48c48]' : ''}`} />
     </button>
   </div>
 );
@@ -101,21 +101,21 @@ const DaySection: React.FC<{
   onToggleDuaBookmark: (scenario: string) => void;
   onToggleActionBookmark: (description: string) => void;
 }> = ({ data, bookmarkedDuas, bookmarkedActions, onToggleDuaBookmark, onToggleActionBookmark }) => (
-  <div className="bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 overflow-hidden mb-12 relative">
-    <div className="bg-white dark:bg-[#0c0c0c] p-8 md:p-10 border-b border-black/10 dark:border-white/10 relative overflow-hidden group">
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-100 dark:from-[#0a0a0a] via-transparent to-transparent opacity-60 pointer-events-none"></div>
+  <div className="bg-slate-50 dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] overflow-hidden mb-12 relative rounded-xl">
+    <div className="bg-white dark:bg-[#0c1a20] p-8 md:p-10 border-b border-black/10 dark:border-[#22404c] relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-100 dark:from-[#09151a] via-transparent to-transparent opacity-60 pointer-events-none"></div>
       <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
          <div className="w-full h-full bg-[repeating-linear-gradient(45deg,rgba(0,0,0,1)_0,rgba(0,0,0,1)_1px,transparent_0,transparent_50%)] dark:bg-[repeating-linear-gradient(45deg,rgba(255,255,255,1)_0,rgba(255,255,255,1)_1px,transparent_0,transparent_50%)] bg-[length:20px_20px]"></div>
       </div>
       
       <div className="relative z-10 text-center sm:text-left">
-        <div className="text-xs uppercase tracking-[0.3em] text-[#c9a227] mb-3">{data.day}</div>
-        <h2 className="text-3xl md:text-4xl font-serif text-gray-900 dark:text-[#f2f2f2] leading-tight">{data.title}</h2>
+        <div className="text-xs uppercase tracking-[0.3em] text-[#c48c48] font-bold mb-3">{data.day}</div>
+        <h2 className="text-3xl md:text-4xl font-serif text-gray-900 dark:text-[#f7eee1] leading-tight">{data.title}</h2>
       </div>
     </div>
     
     <div className="p-8 md:p-12">
-      <div className="border-l-2 border-[#c9a227]/50 pl-6 mb-12 text-gray-600 dark:text-white/60 leading-relaxed text-base md:text-lg max-w-4xl font-serif italic">
+      <div className="border-l-2 border-[#c48c48]/60 pl-6 mb-12 text-gray-600 dark:text-white/60 leading-relaxed text-base md:text-lg max-w-4xl font-serif italic">
         <p>{data.intro}</p>
       </div>
       
@@ -211,23 +211,23 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] dark:bg-[#0a0a0a] text-gray-900 dark:text-[#f2f2f2] font-sans selection:bg-[#c9a227]/30 selection:text-[#c9a227] pb-24 overflow-x-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-[#fbf7f0] dark:bg-[#0c1a20] text-gray-900 dark:text-[#f7eee1] font-sans selection:bg-[#c48c48]/30 selection:text-[#c48c48] pb-24 overflow-x-hidden transition-colors duration-300">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0a0a0a]/95 border-b border-black/5 dark:border-white/5 transition-colors duration-300 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0c1a20]/95 border-b border-[#e8dccf] dark:border-[#1d3540] transition-colors duration-300 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <button 
               onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="flex items-center gap-3 text-left cursor-pointer group"
             >
-              <div className="w-9 h-9 bg-gradient-to-tr from-[#c9a227] to-[#e5be49] rounded-xl flex items-center justify-center shadow-sm shadow-[#c9a227]/20 flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-tr from-[#c48c48] to-[#deb37d] rounded-xl flex items-center justify-center shadow-sm shadow-[#c48c48]/25 flex-shrink-0">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-base sm:text-lg font-serif font-bold text-gray-950 dark:text-[#f2f2f2] leading-none group-hover:text-[#c9a227] transition-colors">
+                <span className="text-base sm:text-lg font-serif font-bold text-gray-950 dark:text-[#f7eee1] leading-none group-hover:text-[#c48c48] transition-colors">
                   মাসিক আল কাউসারের ফতোয়া
                 </span>
-                <span className="text-[11px] text-[#c9a227] font-medium tracking-normal mt-1">
+                <span className="text-[11px] text-[#c48c48] font-medium tracking-normal mt-1">
                   বিষয়ভিত্তিক শরয়ী প্রশ্নোত্তর ও মাসায়েল ভাণ্ডার
                 </span>
               </div>
@@ -237,17 +237,17 @@ export default function App() {
             <div className="flex items-center gap-2 md:hidden">
               <button 
                 onClick={() => setIsDark(!isDark)} 
-                className="p-2 border border-black/5 dark:border-white/5 bg-white dark:bg-[#121212] rounded-full text-gray-600 dark:text-[#f2f2f2] hover:border-[#c9a227]/30 transition-all cursor-pointer shadow-sm"
+                className="p-2 border border-black/5 dark:border-[#22404c] bg-white dark:bg-[#12242c] rounded-full text-gray-600 dark:text-[#f7eee1] hover:border-[#c48c48]/40 transition-all cursor-pointer shadow-sm"
                 aria-label="Toggle theme"
               >
-                {isDark ? <Sun className="w-3.5 h-3.5 text-[#c9a227]" /> : <Moon className="w-3.5 h-3.5 text-[#c9a227]" />}
+                {isDark ? <Sun className="w-3.5 h-3.5 text-[#deb37d]" /> : <Moon className="w-3.5 h-3.5 text-[#c48c48]" />}
               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto overflow-hidden">
             {/* Nav Strip Bar */}
-            <div className="w-full md:w-auto bg-[#1b1911] border border-[#c9a227]/30 dark:border-[#c9a227]/20 p-1 md:p-1.5 rounded-full shadow-lg shadow-[#c9a227]/5">
+            <div className="w-full md:w-auto bg-[#0e2229] border border-[#c48c48]/35 dark:border-[#c48c48]/30 p-1 md:p-1.5 rounded-full shadow-lg shadow-[#0c1a20]/30">
               <div 
                 className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth max-w-full"
                 style={{ 
@@ -260,8 +260,8 @@ export default function App() {
                   onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'fatwa' 
-                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <HandHeart className="w-4 h-4" />
@@ -272,8 +272,8 @@ export default function App() {
                   onClick={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'guide' 
-                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
@@ -284,8 +284,8 @@ export default function App() {
                   onClick={() => { setActiveView('articles'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'articles' 
-                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Info className="w-4 h-4" />
@@ -296,8 +296,8 @@ export default function App() {
                   onClick={() => { setActiveView('bookmarks'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'bookmarks' 
-                      ? 'bg-[#c9a227] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5f5f5]/70 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
+                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
                   }`}
                   title="বুকমার্ক"
                 >
@@ -311,10 +311,10 @@ export default function App() {
             <div className="hidden md:flex items-center">
               <button 
                 onClick={() => setIsDark(!isDark)} 
-                className="p-2 border border-black/5 dark:border-white/5 bg-white dark:bg-[#121212] rounded-full hover:border-[#c9a227] hover:bg-[#c9a227]/5 text-gray-700 dark:text-white transition-all cursor-pointer shadow-sm ml-2"
+                className="p-2 border border-black/5 dark:border-[#22404c] bg-white dark:bg-[#12242c] rounded-full hover:border-[#c48c48] hover:bg-[#c48c48]/10 text-gray-700 dark:text-[#f7eee1] transition-all cursor-pointer shadow-sm ml-2"
                 aria-label="Toggle theme"
               >
-                {isDark ? <Sun className="w-4 h-4 text-[#c9a227]" /> : <Moon className="w-4 h-4 text-[#c9a227]" />}
+                {isDark ? <Sun className="w-4 h-4 text-[#deb37d]" /> : <Moon className="w-4 h-4 text-[#c48c48]" />}
               </button>
             </div>
           </div>
@@ -329,18 +329,18 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <div className="lg:col-span-7">
-              <h2 className="text-[#c9a227] font-serif italic text-xl md:text-2xl mb-6 flex items-center gap-3">
+              <h2 className="text-[#c48c48] font-serif italic text-xl md:text-2xl mb-6 flex items-center gap-3">
                 <Calendar className="w-5 h-5 opacity-70" />
                 ৮-১৩ জিলহজ (8th - 13th Dhul Hijjah)
               </h2>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight mb-8 text-gray-900 dark:text-white">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight mb-8 text-gray-900 dark:text-[#f7eee1]">
                 {hajjData.title.split(' (')[0]} <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-white/40 italic text-2xl md:text-3xl lg:text-4xl mt-3 block">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-[#c48c48] dark:from-white dark:to-[#deb37d] italic text-2xl md:text-3xl lg:text-4xl mt-3 block">
                   {hajjData.subtitle}
                 </span>
               </h1>
               <div className="flex gap-4 sm:gap-6 mt-10">
-                <a href="#rites" className="inline-block px-8 py-4 bg-[#c9a227] text-white dark:text-[#0a0a0a] font-bold tracking-widest text-[10px] md:text-xs hover:bg-[#b08b22] dark:hover:bg-white transition-colors uppercase text-center">
+                <a href="#rites" className="inline-block px-8 py-4 bg-[#c48c48] text-white dark:text-[#0c1a20] font-bold tracking-widest text-[10px] md:text-xs hover:bg-[#a87132] dark:hover:bg-[#deb37d] transition-colors uppercase text-center rounded-sm shadow-md shadow-[#c48c48]/20">
                   গাইড শুরু করুন
                 </a>
                 <button 
@@ -348,13 +348,13 @@ export default function App() {
                     alert('হজ্জ মাবরুর! (May your Hajj be accepted!)');
                     setBlessingVisible(!blessingVisible);
                   }}
-                  className="px-8 py-4 border border-black/20 dark:border-white/20 text-gray-900 dark:text-white font-bold tracking-widest text-[10px] md:text-xs hover:bg-black/5 dark:hover:bg-white/10 transition-colors uppercase">
+                  className="px-8 py-4 border border-black/20 dark:border-white/20 text-gray-900 dark:text-white font-bold tracking-widest text-[10px] md:text-xs hover:bg-black/5 dark:hover:bg-white/10 transition-colors uppercase rounded-sm">
                   {blessingVisible ? "Hide Blessing" : "Show Blessing"}
                 </button>
               </div>
               {blessingVisible && (
-                <div className="mt-6 p-4 border-l-2 border-[#c9a227] bg-slate-50 dark:bg-[#1a1a1a] max-w-md animate-in fade-in slide-in-from-top-2">
-                  <p className="text-[#c9a227] font-serif italic text-lg leading-relaxed">
+                <div className="mt-6 p-4 border-l-2 border-[#c48c48] bg-slate-50 dark:bg-[#182f3a] max-w-md animate-in fade-in slide-in-from-top-2 rounded-r-md">
+                  <p className="text-[#c48c48] font-serif italic text-lg leading-relaxed">
                     "হজ্জ মাবরুর, যাম্বুন মাগফুর, সা'য়ুন মাশকুরা"<br />
                     <span className="text-gray-500 dark:text-white/60 text-sm block mt-2 font-sans not-italic">May your Hajj be accepted, your sins forgiven, and your efforts rewarded.</span>
                   </p>
@@ -363,13 +363,13 @@ export default function App() {
             </div>
             
             <div className="lg:col-span-5 relative hidden md:block mt-8 lg:mt-0">
-              <div className="aspect-[4/5] bg-slate-50 dark:bg-[#1a1a1a] border border-black/10 dark:border-white/10 overflow-hidden relative group p-10 flex flex-col justify-end">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#fafafa] dark:from-[#0a0a0a] via-[#fafafa]/60 dark:via-[#0a0a0a]/60 to-transparent z-10 opacity-80"></div>
+              <div className="aspect-[4/5] bg-slate-50 dark:bg-[#12242c] border border-black/10 dark:border-[#22404c] overflow-hidden relative group p-10 flex flex-col justify-end rounded-xl">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#fbf7f0] dark:from-[#0c1a20] via-[#fbf7f0]/60 dark:via-[#0c1a20]/60 to-transparent z-10 opacity-80"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-full h-full bg-[repeating-linear-gradient(45deg,rgba(0,0,0,0.03)_0,rgba(0,0,0,0.03)_1px,transparent_0,transparent_50%)] dark:bg-[repeating-linear-gradient(45deg,rgba(255,255,255,0.02)_0,rgba(255,255,255,0.02)_1px,transparent_0,transparent_50%)] bg-[length:20px_20px]"></div>
                 </div>
                 <div className="relative z-20">
-                   <div className="text-[10px] uppercase tracking-[0.3em] text-[#c9a227] mb-4">Introduction</div>
+                   <div className="text-[10px] uppercase tracking-[0.3em] text-[#c48c48] font-bold mb-4">Introduction</div>
                    <div className="space-y-4">
                      {hajjData.intro.map((p, i) => (
                        <p key={i} className="text-gray-600 dark:text-white/60 text-[15px] font-sans leading-relaxed">{p}</p>
@@ -378,12 +378,12 @@ export default function App() {
                 </div>
               </div>
               
-              <div className="absolute -top-4 -right-4 w-24 h-24 border-t border-r border-[#c9a227] opacity-40"></div>
-              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b border-l border-[#c9a227] opacity-40"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 border-t border-r border-[#c48c48] opacity-50"></div>
+              <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b border-l border-[#c48c48] opacity-50"></div>
             </div>
 
             {/* Mobile intro fallback */}
-            <div className="md:hidden space-y-4 border-l-2 pl-5 border-[#c9a227]/40 mt-8">
+            <div className="md:hidden space-y-4 border-l-2 pl-5 border-[#c48c48]/50 mt-8">
               {hajjData.intro.map((p, i) => (
                  <p key={i} className="text-gray-600 dark:text-white/60 text-sm font-sans leading-relaxed">{p}</p>
               ))}
@@ -398,8 +398,8 @@ export default function App() {
         
         <div className="mb-20">
           <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-[#c9a227]/10 rounded-full">
-              <MapIcon className="w-6 h-6 text-[#c9a227]" />
+            <div className="p-3 bg-[#c48c48]/15 rounded-full">
+              <MapIcon className="w-6 h-6 text-[#c48c48]" />
             </div>
             <div>
               <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-white">Interactive Hajj Map</h2>
@@ -436,8 +436,8 @@ export default function App() {
           
           <div id="post-hajj" className="py-16 flex items-center justify-center relative scroll-mt-24">
             <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-black/10 dark:via-white/20 to-transparent"></div>
-            <div className="bg-[#fafafa] dark:bg-[#0a0a0a] px-8 relative z-10 flex flex-col items-center">
-               <div className="w-4 h-4 border border-[#c9a227] rotate-45 mb-4 bg-white dark:bg-transparent"></div>
+            <div className="bg-[#fbf7f0] dark:bg-[#0c1a20] px-8 relative z-10 flex flex-col items-center">
+               <div className="w-4 h-4 border border-[#c48c48] rotate-45 mb-4 bg-white dark:bg-transparent"></div>
                <h2 className="text-[10px] font-bold text-gray-400 dark:text-white/40 uppercase tracking-[0.3em] text-center">হজ্জ পরবর্তী আমল<br/><span className="mt-1 block text-gray-400 dark:text-white/20">Post-Hajj Observances</span></h2>
             </div>
           </div>
@@ -475,28 +475,28 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-black/10 dark:border-white/10 px-8 md:px-12 py-14 bg-white dark:bg-[#0c0c0c] max-w-7xl mx-auto transition-colors duration-300">
+      <footer className="border-t border-[#e8dccf] dark:border-[#1d3540] px-8 md:px-12 py-14 bg-white dark:bg-[#12242c] max-w-7xl mx-auto transition-colors duration-300">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c9a227] mb-2 font-bold">৪৮০০+</div>
+            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">৪৮০০+</div>
             <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
               প্রামাণ্য ফতোয়া<br/>Authentic Fatwas
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c9a227] mb-2 font-bold">১৫+</div>
+            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">১৫+</div>
             <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
               বিষয়ভিত্তিক ক্যাটাগরি<br/>Categories
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c9a227] mb-2 font-bold">মাসিক</div>
+            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">মাসিক</div>
             <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
               আল কাউসার সূত্র<br/>Al-Kawsar Archive
             </div>
           </div>
           <div className="flex flex-col items-start md:items-end justify-center">
-            <span className="text-[11px] uppercase tracking-widest text-[#c9a227] mb-2 font-bold">
+            <span className="text-[11px] uppercase tracking-widest text-[#c48c48] mb-2 font-bold">
               সহজ দ্বীনি সফরসঙ্গী
             </span>
             <p className="text-xs text-gray-500 dark:text-white/40 text-left md:text-right">

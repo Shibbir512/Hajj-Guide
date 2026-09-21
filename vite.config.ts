@@ -40,8 +40,8 @@ export default defineConfig(({mode}) => {
           name: 'মাসিক আল কাউসারের ফতোয়া | বিষয়ভিত্তিক ফতোয়া ও মাসায়েল ভাণ্ডার',
           short_name: 'আল কাউসার ফতোয়া',
           description: 'মাসিক আল কাউসারের বিষয়ভিত্তিক প্রামাণ্য ফতোয়া ও জীবনঘনিষ্ঠ মাসায়েল ভাণ্ডার।',
-          theme_color: '#0a0a0a',
-          background_color: '#0a0a0a',
+          theme_color: '#0c1a20',
+          background_color: '#fbf7f0',
           display: 'standalone',
           icons: [
             {
