@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+old_fatwaview*.txt
+resolve.js
+resolve_conflicts.py
