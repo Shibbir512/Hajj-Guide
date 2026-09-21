@@ -211,23 +211,23 @@ export default function App() {
   }, [isDark]);
 
   return (
-    <div className="min-h-screen bg-[#fbf7f0] dark:bg-[#0c1a20] text-gray-900 dark:text-[#f7eee1] font-sans selection:bg-[#c48c48]/30 selection:text-[#c48c48] pb-24 overflow-x-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-[#f5f8f9] dark:bg-[#091a1f] text-gray-900 dark:text-[#f0f7f8] font-sans selection:bg-[#143d47]/20 selection:text-[#143d47] pb-24 overflow-x-hidden transition-colors duration-300">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#0c1a20]/95 border-b border-[#e8dccf] dark:border-[#1d3540] transition-colors duration-300 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 bg-white/95 dark:bg-[#091a1f]/95 border-b border-[#dbe6e9] dark:border-[#193a44] transition-colors duration-300 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center justify-between w-full md:w-auto">
             <button 
               onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="flex items-center gap-3 text-left cursor-pointer group"
             >
-              <div className="w-9 h-9 bg-gradient-to-tr from-[#c48c48] to-[#deb37d] rounded-xl flex items-center justify-center shadow-sm shadow-[#c48c48]/25 flex-shrink-0">
+              <div className="w-9 h-9 bg-gradient-to-tr from-[#10353f] to-[#1b4e5b] rounded-xl flex items-center justify-center shadow-md shadow-[#10353f]/25 border border-[#225b6a]/30 flex-shrink-0">
                 <BookOpen className="w-5 h-5 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-base sm:text-lg font-serif font-bold text-gray-950 dark:text-[#f7eee1] leading-none group-hover:text-[#c48c48] transition-colors">
+                <span className="text-base sm:text-lg font-serif font-bold text-gray-950 dark:text-[#f0f7f8] leading-none group-hover:text-[#17434e] dark:group-hover:text-[#deb37d] transition-colors">
                   মাসিক আল কাউসারের ফতোয়া
                 </span>
-                <span className="text-[11px] text-[#c48c48] font-medium tracking-normal mt-1">
+                <span className="text-[11px] text-[#17434e] dark:text-[#deb37d] font-semibold tracking-normal mt-1">
                   বিষয়ভিত্তিক শরয়ী প্রশ্নোত্তর ও মাসায়েল ভাণ্ডার
                 </span>
               </div>
@@ -237,17 +237,17 @@ export default function App() {
             <div className="flex items-center gap-2 md:hidden">
               <button 
                 onClick={() => setIsDark(!isDark)} 
-                className="p-2 border border-black/5 dark:border-[#22404c] bg-white dark:bg-[#12242c] rounded-full text-gray-600 dark:text-[#f7eee1] hover:border-[#c48c48]/40 transition-all cursor-pointer shadow-sm"
+                className="p-2 border border-[#dbe6e9] dark:border-[#1d434f] bg-white dark:bg-[#0f2931] rounded-full text-gray-700 dark:text-[#f0f7f8] hover:border-[#17434e]/40 transition-all cursor-pointer shadow-sm"
                 aria-label="Toggle theme"
               >
-                {isDark ? <Sun className="w-3.5 h-3.5 text-[#deb37d]" /> : <Moon className="w-3.5 h-3.5 text-[#c48c48]" />}
+                {isDark ? <Sun className="w-3.5 h-3.5 text-[#deb37d]" /> : <Moon className="w-3.5 h-3.5 text-[#17434e]" />}
               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-3 w-full md:w-auto overflow-hidden">
-            {/* Nav Strip Bar */}
-            <div className="w-full md:w-auto bg-[#0e2229] border border-[#c48c48]/35 dark:border-[#c48c48]/30 p-1 md:p-1.5 rounded-full shadow-lg shadow-[#0c1a20]/30">
+            {/* Nav Strip Bar with Deep Starry Teal */}
+            <div className="w-full md:w-auto bg-[#0c232a] border border-[#1b4854] p-1 md:p-1.5 rounded-full shadow-lg shadow-[#0c232a]/30">
               <div 
                 className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 px-1 scroll-smooth max-w-full"
                 style={{ 
@@ -260,8 +260,8 @@ export default function App() {
                   onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'fatwa' 
-                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
+                      : 'text-[#e2eff2]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <HandHeart className="w-4 h-4" />
@@ -272,8 +272,8 @@ export default function App() {
                   onClick={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'guide' 
-                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
+                      : 'text-[#e2eff2]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
@@ -284,8 +284,8 @@ export default function App() {
                   onClick={() => { setActiveView('articles'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'articles' 
-                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
+                      : 'text-[#e2eff2]/75 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Info className="w-4 h-4" />
@@ -296,8 +296,8 @@ export default function App() {
                   onClick={() => { setActiveView('bookmarks'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
                   className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'bookmarks' 
-                      ? 'bg-[#c48c48] text-white shadow-md font-extrabold scale-102' 
-                      : 'text-[#f5eee4]/75 hover:text-white hover:bg-white/10'
+                      ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
+                      : 'text-[#e2eff2]/75 hover:text-white hover:bg-white/10'
                   }`}
                   title="বুকমার্ক"
                 >
@@ -311,10 +311,10 @@ export default function App() {
             <div className="hidden md:flex items-center">
               <button 
                 onClick={() => setIsDark(!isDark)} 
-                className="p-2 border border-black/5 dark:border-[#22404c] bg-white dark:bg-[#12242c] rounded-full hover:border-[#c48c48] hover:bg-[#c48c48]/10 text-gray-700 dark:text-[#f7eee1] transition-all cursor-pointer shadow-sm ml-2"
+                className="p-2 border border-[#dbe6e9] dark:border-[#1d434f] bg-white dark:bg-[#0f2931] rounded-full hover:border-[#17434e] hover:bg-[#143d47]/10 text-gray-700 dark:text-[#f0f7f8] transition-all cursor-pointer shadow-sm ml-2"
                 aria-label="Toggle theme"
               >
-                {isDark ? <Sun className="w-4 h-4 text-[#deb37d]" /> : <Moon className="w-4 h-4 text-[#c48c48]" />}
+                {isDark ? <Sun className="w-4 h-4 text-[#deb37d]" /> : <Moon className="w-4 h-4 text-[#17434e]" />}
               </button>
             </div>
           </div>
@@ -475,31 +475,31 @@ export default function App() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-[#e8dccf] dark:border-[#1d3540] px-8 md:px-12 py-14 bg-white dark:bg-[#12242c] max-w-7xl mx-auto transition-colors duration-300">
+      <footer className="border-t border-[#1b4854] px-8 md:px-12 py-14 bg-[#0c232a] text-[#f0f7f8] max-w-7xl mx-auto transition-colors duration-300">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">৪৮০০+</div>
-            <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
+            <div className="text-3xl sm:text-4xl font-serif text-[#deb37d] mb-2 font-bold">৪৮০০+</div>
+            <div className="text-[11px] uppercase tracking-widest text-[#a3c7cf] font-bold leading-relaxed">
               প্রামাণ্য ফতোয়া<br/>Authentic Fatwas
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">১৫+</div>
-            <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
+            <div className="text-3xl sm:text-4xl font-serif text-[#deb37d] mb-2 font-bold">১৫+</div>
+            <div className="text-[11px] uppercase tracking-widest text-[#a3c7cf] font-bold leading-relaxed">
               বিষয়ভিত্তিক ক্যাটাগরি<br/>Categories
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-serif text-[#c48c48] mb-2 font-bold">মাসিক</div>
-            <div className="text-[11px] uppercase tracking-widest text-gray-500 dark:text-white/40 font-bold leading-relaxed">
+            <div className="text-3xl sm:text-4xl font-serif text-[#deb37d] mb-2 font-bold">মাসিক</div>
+            <div className="text-[11px] uppercase tracking-widest text-[#a3c7cf] font-bold leading-relaxed">
               আল কাউসার সূত্র<br/>Al-Kawsar Archive
             </div>
           </div>
           <div className="flex flex-col items-start md:items-end justify-center">
-            <span className="text-[11px] uppercase tracking-widest text-[#c48c48] mb-2 font-bold">
+            <span className="text-[11px] uppercase tracking-widest text-[#deb37d] mb-2 font-bold">
               সহজ দ্বীনি সফরসঙ্গী
             </span>
-            <p className="text-xs text-gray-500 dark:text-white/40 text-left md:text-right">
+            <p className="text-xs text-[#a3c7cf] text-left md:text-right">
               মাসিক আল কাউসারের ফতোয়া ও সহজ হজ্জ গাইড
             </p>
           </div>
