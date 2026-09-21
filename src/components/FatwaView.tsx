@@ -39,9 +39,45 @@ const toBengaliNumber = (num: number): string => {
   return num.toString().split('').map(d => bnDigits[parseInt(d, 10)] ?? d).join('');
 };
 
-const normalizeCategory = (cat: string): string => {
-  if (cat === 'দোয়া ও আমল' || cat === 'দোয়া ও আমল') return 'দোয়া ও আমল';
-  return cat;
+const normalizeFatwa = (f: Fatwa): Fatwa => {
+  let cat = (f.Category || 'বিবিধ (অন্যান্য)').trim();
+  let sub = (f.Subcategory || 'সাধারণ').trim();
+
+  // 1. Normalize Category spellings
+  if (cat === 'দোয়া ও আমল' || cat === 'দোয়া ও আমল') cat = 'দোয়া ও আমল';
+
+  // 2. Normalize Subcategories (spelling duplicates & inconsistencies)
+  if (sub === 'ক্বাযা ও সিজদায়ে সাহু') sub = 'ক্বাযা ও সিজদায়ে সাহু';
+  if (sub === 'কিস্তি ও ভাড়া') sub = 'কিস্তি ও ভাড়া';
+  if (sub === 'ক্রয়-বিক্রয় ও ঋণ') sub = 'ক্রয়-বিক্রয় ও ঋণ';
+  if (sub === 'সদকায়ে ফিতর') sub = 'সদকায়ে ফিতর';
+  if (sub === 'তালাক ও অধিকার') sub = 'তালাক ও ইদ্দত';
+  if (sub === 'সাহাবায়ে কেরাম') sub = 'সাহাবায়ে কেরাম';
+  if (sub === 'নাপাকি ও ইস্তেঞ্জা') sub = 'নাপাকি ও পবিত্রতা';
+  if (sub === 'ওযু ও তায়াম্মুম') sub = 'ওযু';
+
+  // 3. Meaningful sub-categorization for single-bucket categories:
+  // কুরবানী ও আকীকা: আকীকা সংক্রান্ত প্রশ্নগুলোকে আলাদা উপ-বিভাগ দেওয়া
+  if (cat === 'কুরবানী ও আকীকা') {
+    if (f.Question && (f.Question.includes('আকীকা') || f.Question.includes('আকিকা'))) {
+      sub = 'আকীকা';
+    } else {
+      sub = 'কুরবানী';
+    }
+  }
+
+  // হজ্ব ও ওমরাহ: ওমরাহ এবং তাওয়াফ-সায়ী আলাদা করা
+  if (cat === 'হজ্ব ও ওমরাহ') {
+    if (f.Question && (f.Question.includes('ওমরা') || f.Question.includes('উমরা'))) {
+      sub = 'ওমরাহ';
+    } else if (f.Question && (f.Question.includes('তাওয়াফ') || f.Question.includes('তোয়াফ') || f.Question.includes('সায়ী'))) {
+      sub = 'তাওয়াফ ও সায়ী';
+    } else {
+      sub = 'হজ্ব ও ইহরাম';
+    }
+  }
+
+  return { ...f, Category: cat, Subcategory: sub };
 };
 
 export const FatwaView: React.FC = () => {
@@ -63,10 +99,7 @@ export const FatwaView: React.FC = () => {
     import('../data/fatwas_data.json')
       .then((m) => {
         const rawData = m.default as Fatwa[];
-        const normalized = rawData.map(f => ({
-          ...f,
-          Category: normalizeCategory(f.Category || 'বিবিধ (অন্যান্য)')
-        }));
+        const normalized = rawData.map(normalizeFatwa);
         setFatwas(normalized);
         setIsLoading(false);
 
