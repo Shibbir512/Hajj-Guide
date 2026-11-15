@@ -1,10 +1,12 @@
 import { BookOpen, Calendar, HandHeart, Info, MapPin, Moon, Sun, Map as MapIcon, Star } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { hajjData, DayGuide, Prayer, Action } from './data';
-import { HajjMap } from './components/HajjMap';
-import { ArticleView } from './components/ArticleView';
 import { FatwaView } from './components/FatwaView';
-import { BookmarkView } from './components/BookmarkView';
+
+// Lazy loaded views to reduce initial bundle and unused JS
+const HajjMap = lazy(() => import('./components/HajjMap').then(m => ({ default: m.HajjMap })));
+const ArticleView = lazy(() => import('./components/ArticleView').then(m => ({ default: m.ArticleView })));
+const BookmarkView = lazy(() => import('./components/BookmarkView').then(m => ({ default: m.BookmarkView })));
 
 const SectionHeader: React.FC<{ title: string, icon: any }> = ({ title, icon: Icon }) => (
   <div className="flex items-center gap-3 border-b border-black/10 dark:border-white/10 pb-3 mb-8">
@@ -35,9 +37,10 @@ const PrayerCard: React.FC<{
         className={`p-2 transition-colors duration-200 border rounded-md cursor-pointer ${
           isBookmarked 
             ? 'text-[#c48c48] bg-[#c48c48]/15 border-[#c48c48]/40 hover:bg-[#c48c48]/25'
-            : 'text-gray-400 dark:text-white/30 hover:text-[#c48c48] hover:bg-[#c48c48]/10 border-black/10 dark:border-white/10'
+            : 'text-gray-500 dark:text-white/40 hover:text-[#c48c48] hover:bg-[#c48c48]/10 border-black/10 dark:border-white/10'
         }`}
         title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
+        aria-label={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
       >
         <Star className={`w-4 h-4 ${isBookmarked ? 'fill-[#c48c48]' : ''}`} />
       </button>
@@ -85,9 +88,10 @@ const ActionItem: React.FC<{
       className={`p-1.5 rounded transition-colors cursor-pointer ${
         isBookmarked 
           ? 'text-[#c48c48] hover:bg-[#c48c48]/10' 
-          : 'text-gray-300 dark:text-white/10 hover:text-[#c48c48] hover:bg-black/5 dark:hover:bg-white/5'
+          : 'text-gray-400 dark:text-white/20 hover:text-[#c48c48] hover:bg-black/5 dark:hover:bg-white/5'
       }`}
       title={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
+      aria-label={isBookmarked ? 'বুকমার্ক থেকে মুছুন' : 'বুকমার্ক করুন'}
     >
       <Star className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#c48c48]' : ''}`} />
     </button>
@@ -219,6 +223,7 @@ export default function App() {
             <button 
               onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="flex items-center gap-3 text-left cursor-pointer group"
+              aria-label="মাসিক আল কাউসারের ফতোয়া হোমপেজ"
             >
               <div className="w-9 h-9 bg-gradient-to-tr from-[#10353f] to-[#1b4e5b] rounded-xl flex items-center justify-center shadow-md shadow-[#10353f]/25 border border-[#225b6a]/30 flex-shrink-0">
                 <BookOpen className="w-5 h-5 text-white" />
@@ -238,7 +243,7 @@ export default function App() {
               <button 
                 onClick={() => setIsDark(!isDark)} 
                 className="p-2 border border-[#dbe6e9] dark:border-[#1d434f] bg-white dark:bg-[#0f2931] rounded-full text-gray-700 dark:text-[#f0f7f8] hover:border-[#17434e]/40 transition-all cursor-pointer shadow-sm"
-                aria-label="Toggle theme"
+                aria-label={isDark ? "লাইট মোড চালু করুন" : "ডার্ক মোড চালু করুন"}
               >
                 {isDark ? <Sun className="w-3.5 h-3.5 text-[#deb37d]" /> : <Moon className="w-3.5 h-3.5 text-[#17434e]" />}
               </button>
@@ -258,6 +263,7 @@ export default function App() {
               >
                 <button 
                   onClick={() => { setActiveView('fatwa'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  aria-label="ফতোয়া ও মাসায়েল ট্যাব"
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'fatwa' 
                       ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
@@ -270,6 +276,7 @@ export default function App() {
 
                 <button 
                   onClick={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  aria-label="হজ্জ গাইড ট্যাব"
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'guide' 
                       ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
@@ -282,6 +289,7 @@ export default function App() {
 
                 <button 
                   onClick={() => { setActiveView('articles'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  aria-label="প্রবন্ধসমূহ ট্যাব"
                   className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'articles' 
                       ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
@@ -294,6 +302,7 @@ export default function App() {
 
                 <button 
                   onClick={() => { setActiveView('bookmarks'); window.scrollTo({ top: 0, behavior: 'smooth' }); }} 
+                  aria-label="বুকমার্ক ট্যাব"
                   className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-full font-bold transition-all duration-300 text-xs sm:text-[13px] tracking-wide cursor-pointer flex-shrink-0 ${
                     activeView === 'bookmarks' 
                       ? 'bg-[#153e48] text-white shadow-md font-extrabold border border-[#2b6d7c]/60 scale-102' 
@@ -312,7 +321,7 @@ export default function App() {
               <button 
                 onClick={() => setIsDark(!isDark)} 
                 className="p-2 border border-[#dbe6e9] dark:border-[#1d434f] bg-white dark:bg-[#0f2931] rounded-full hover:border-[#17434e] hover:bg-[#143d47]/10 text-gray-700 dark:text-[#f0f7f8] transition-all cursor-pointer shadow-sm ml-2"
-                aria-label="Toggle theme"
+                aria-label={isDark ? "লাইট মোড চালু করুন" : "ডার্ক মোড চালু করুন"}
               >
                 {isDark ? <Sun className="w-4 h-4 text-[#deb37d]" /> : <Moon className="w-4 h-4 text-[#17434e]" />}
               </button>
@@ -406,13 +415,20 @@ export default function App() {
               <p className="text-gray-500 dark:text-white/60 text-sm mt-1">Tap on locations to view integrated actions and prayers</p>
             </div>
           </div>
-          <HajjMap locations={[
-            { id: '1', name: 'Masjid al-Haram (Kaaba)', coord: [21.4225, 39.8262], dataRef: hajjData.makkahArrival },
-            { id: '2', name: 'Safa and Marwa', coord: [21.4227, 39.8280], dataRef: hajjData.makkahArrival },
-            { id: '3', name: 'Mina', coord: [21.4133, 39.8933], dataRef: hajjData.days[0] }, // Day 1 details
-            { id: '4', name: 'Mount Arafat', coord: [21.3549, 39.9841], dataRef: hajjData.days[1] }, // Day 2 details
-            { id: '5', name: 'Muzdalifah', coord: [21.3879, 39.9079], dataRef: hajjData.days[2] } // Muzdalifah is eve of 10th (included in Day 2 night or Day 3)
-          ]} />
+          <Suspense fallback={
+            <div className="h-[600px] w-full rounded-xl bg-slate-100 dark:bg-[#12242c] flex flex-col items-center justify-center text-gray-500">
+              <MapIcon className="w-8 h-8 text-[#c48c48] animate-bounce mb-2" />
+              <span>ইন্টারেক্টিভ ম্যাপ লোড হচ্ছে...</span>
+            </div>
+          }>
+            <HajjMap locations={[
+              { id: '1', name: 'Masjid al-Haram (Kaaba)', coord: [21.4225, 39.8262], dataRef: hajjData.makkahArrival },
+              { id: '2', name: 'Safa and Marwa', coord: [21.4227, 39.8280], dataRef: hajjData.makkahArrival },
+              { id: '3', name: 'Mina', coord: [21.4133, 39.8933], dataRef: hajjData.days[0] }, // Day 1 details
+              { id: '4', name: 'Mount Arafat', coord: [21.3549, 39.9841], dataRef: hajjData.days[1] }, // Day 2 details
+              { id: '5', name: 'Muzdalifah', coord: [21.3879, 39.9079], dataRef: hajjData.days[2] } // Muzdalifah is eve of 10th (included in Day 2 night or Day 3)
+            ]} />
+          </Suspense>
         </div>
 
         <div className="space-y-8">
@@ -461,17 +477,21 @@ export default function App() {
       </main>
       </>
       ) : activeView === 'articles' ? (
-        <ArticleView />
+        <Suspense fallback={<div className="max-w-4xl mx-auto px-6 py-24 text-center text-gray-600 dark:text-white/60">প্রবন্ধসমূহ লোড হচ্ছে...</div>}>
+          <ArticleView />
+        </Suspense>
       ) : activeView === 'fatwa' ? (
         <FatwaView />
       ) : (
-        <BookmarkView 
-          bookmarkedDuas={bookmarkedDuas}
-          bookmarkedActions={bookmarkedActions}
-          onToggleDuaBookmark={toggleDuaBookmark}
-          onToggleActionBookmark={toggleActionBookmark}
-          onNavigateToGuide={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        />
+        <Suspense fallback={<div className="max-w-4xl mx-auto px-6 py-24 text-center text-gray-600 dark:text-white/60">বুকমার্ক লোড হচ্ছে...</div>}>
+          <BookmarkView 
+            bookmarkedDuas={bookmarkedDuas}
+            bookmarkedActions={bookmarkedActions}
+            onToggleDuaBookmark={toggleDuaBookmark}
+            onToggleActionBookmark={toggleActionBookmark}
+            onNavigateToGuide={() => { setActiveView('guide'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+          />
+        </Suspense>
       )}
 
       {/* Footer */}

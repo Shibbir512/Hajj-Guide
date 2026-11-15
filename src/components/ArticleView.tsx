@@ -78,17 +78,19 @@ export const ArticleView: React.FC = () => {
               <button
                 onClick={() => { setCurrentPage(prev => Math.max(prev - 1, 1)); window.scrollTo(0, 0); }}
                 disabled={currentPage === 1}
-                className="p-2 rounded-full border border-black/10 dark:border-[#22404c] text-gray-500 hover:text-[#c48c48] hover:border-[#c48c48] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                aria-label="পূর্ববর্তী পৃষ্ঠা"
+                className="p-2 rounded-full border border-black/10 dark:border-[#22404c] text-gray-600 dark:text-white/70 hover:text-[#c48c48] hover:border-[#c48c48] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="text-sm font-medium text-gray-500 dark:text-white/60">
+              <span className="text-sm font-medium text-gray-600 dark:text-white/70">
                 পৃষ্ঠা {currentPage} / {totalPages}
               </span>
               <button
                 onClick={() => { setCurrentPage(prev => Math.min(prev + 1, totalPages)); window.scrollTo(0, 0); }}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-full border border-black/10 dark:border-[#22404c] text-gray-500 hover:text-[#c48c48] hover:border-[#c48c48] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                aria-label="পরবর্তী পৃষ্ঠা"
+                className="p-2 rounded-full border border-black/10 dark:border-[#22404c] text-gray-600 dark:text-white/70 hover:text-[#c48c48] hover:border-[#c48c48] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -99,7 +101,8 @@ export const ArticleView: React.FC = () => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <button 
             onClick={() => { setSelectedArticleId(null); window.scrollTo(0, 0); }}
-            className="mb-8 flex items-center gap-2 text-sm font-semibold tracking-widest uppercase text-gray-500 hover:text-[#c48c48] dark:text-white/60 dark:hover:text-[#c48c48] transition-colors border max-w-fit px-4 py-2 rounded-full border-black/10 dark:border-[#22404c]"
+            aria-label="প্রবন্ধ তালিকায় ফিরে যান"
+            className="mb-8 flex items-center gap-2 text-sm font-semibold tracking-widest uppercase text-gray-600 hover:text-[#c48c48] dark:text-white/70 dark:hover:text-[#c48c48] transition-colors border max-w-fit px-4 py-2 rounded-full border-black/10 dark:border-[#22404c]"
           >
             <ArrowLeft className="w-4 h-4" /> ফিরে যান
           </button>

@@ -25,3 +25,12 @@ html {
   scrollbar-width: none;  /* Firefox */
 }
 
+/* Noscript container for crawler & fallback without inline styles */
+.noscript-container {
+  padding: 20px;
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+

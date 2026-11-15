@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2, RotateCcw, LayoutGrid, CheckCircle2, Sparkles } from 'lucide-react';
+import { Search, Filter, BookOpen, ChevronLeft, ChevronRight, HelpCircle, ChevronUp, ChevronDown, Loader2, RotateCcw, LayoutGrid, CheckCircle2, Sparkles, Share2, Copy, Link as LinkIcon } from 'lucide-react';
 
 interface Fatwa {
   Year: number;
@@ -43,42 +43,180 @@ const normalizeFatwa = (f: Fatwa): Fatwa => {
   let cat = (f.Category || 'বিবিধ (অন্যান্য)').trim();
   let sub = (f.Subcategory || 'সাধারণ').trim();
 
-  // 1. Normalize Category spellings
-  if (cat === 'দোয়া ও আমল' || cat === 'দোয়া ও আমল') cat = 'দোয়া ও আমল';
-
-  // 2. Normalize Subcategories (spelling duplicates & inconsistencies)
-  if (sub === 'ক্বাযা ও সিজদায়ে সাহু') sub = 'ক্বাযা ও সিজদায়ে সাহু';
-  if (sub === 'কিস্তি ও ভাড়া') sub = 'কিস্তি ও ভাড়া';
-  if (sub === 'ক্রয়-বিক্রয় ও ঋণ') sub = 'ক্রয়-বিক্রয় ও ঋণ';
-  if (sub === 'সদকায়ে ফিতর') sub = 'সদকায়ে ফিতর';
-  if (sub === 'তালাক ও অধিকার') sub = 'তালাক ও ইদ্দত';
-  if (sub === 'সাহাবায়ে কেরাম') sub = 'সাহাবায়ে কেরাম';
-  if (sub === 'নাপাকি ও ইস্তেঞ্জা') sub = 'নাপাকি ও পবিত্রতা';
-  if (sub === 'ওযু ও তায়াম্মুম') sub = 'ওযু';
-
-  // 3. Meaningful sub-categorization for single-bucket categories:
-  // কুরবানী ও আকীকা: আকীকা সংক্রান্ত প্রশ্নগুলোকে আলাদা উপ-বিভাগ দেওয়া
-  if (cat === 'কুরবানী ও আকীকা') {
-    if (f.Question && (f.Question.includes('আকীকা') || f.Question.includes('আকিকা'))) {
-      sub = 'আকীকা';
-    } else {
-      sub = 'কুরবানী';
-    }
-  }
-
-  // হজ্ব ও ওমরাহ: ওমরাহ এবং তাওয়াফ-সায়ী আলাদা করা
-  if (cat === 'হজ্ব ও ওমরাহ') {
-    if (f.Question && (f.Question.includes('ওমরা') || f.Question.includes('উমরা'))) {
-      sub = 'ওমরাহ';
-    } else if (f.Question && (f.Question.includes('তাওয়াফ') || f.Question.includes('তোয়াফ') || f.Question.includes('সায়ী'))) {
-      sub = 'তাওয়াফ ও সায়ী';
-    } else {
-      sub = 'হজ্ব ও ইহরাম';
-    }
-  }
+  // The database is audited and frozen. We DO NOT overwrite classifications at runtime.
+  // We simply trust the data and ensure basic fallback strings.
 
   return { ...f, Category: cat, Subcategory: sub };
 };
+
+
+const getAnswerPreview = (html: string, length = 120) => {
+  const text = html.replace(/<[^>]+>/g, '').trim();
+  return text.length > length ? text.substring(0, length) + '...' : text;
+};
+
+// Skeleton Card for zero layout shift (CLS = 0)
+const FatwaSkeletonCard = React.memo(() => (
+  <div className="bg-white dark:bg-[#0c2027] border border-black/10 dark:border-[#1c434f] rounded-xl overflow-hidden shadow-sm p-5 sm:p-7 animate-pulse">
+    <div className="flex items-start gap-4">
+      <div className="w-10 h-10 sm:w-11 sm:h-11 bg-slate-200 dark:bg-[#15343e] rounded-xl flex-shrink-0 mt-0.5"></div>
+      <div className="flex-1 space-y-3">
+        <div className="h-5 bg-slate-200 dark:bg-[#15343e] rounded-md w-3/4"></div>
+        <div className="h-4 bg-slate-100 dark:bg-[#102931] rounded-md w-full"></div>
+        <div className="flex gap-2 pt-1">
+          <div className="h-6 w-24 bg-slate-200 dark:bg-[#15343e] rounded-md"></div>
+          <div className="h-6 w-20 bg-slate-100 dark:bg-[#102931] rounded-md"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+));
+
+// Memoized FatwaCard component for performance
+const FatwaCard = React.memo(({ 
+  fatwa, 
+  index, 
+  isExpanded, 
+  setExpandedId, 
+  selectCategory, 
+  meta, 
+  searchTerm, 
+  maxSearchScore,
+  toBengaliNumber 
+}: any) => {
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const parts = fatwa.Link?.split('/').filter(Boolean) || [];
+    const id = parts[parts.length - 1];
+    if (id) {
+      const url = `${window.location.origin}${window.location.pathname}#fatwa-${id}`;
+      navigator.clipboard.writeText(url);
+      alert('ফতোয়ার লিংক কপি করা হয়েছে!');
+    }
+  };
+
+  const idParts = fatwa.Link?.split('/').filter(Boolean) || [];
+  const fatwaId = idParts[idParts.length - 1] || '';
+  const plainQuestion = fatwa.Question?.replace(/<[^>]+>/g, '').slice(0, 60) || '';
+
+  return (
+    <div 
+      id={`fatwa-${fatwaId}`}
+      className="bg-white dark:bg-[#0c2027] border border-black/10 dark:border-[#1c434f] hover:border-[#2b7284]/60 rounded-xl overflow-hidden shadow-sm transition-all duration-200 scroll-mt-24"
+    >
+      {/* Header Section */}
+      <div 
+        className="p-5 sm:p-7 cursor-pointer hover:bg-slate-50/70 dark:hover:bg-[#0e2730]/50 transition-colors"
+        onClick={() => setExpandedId(isExpanded ? null : index)}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-label={`ফতোয়া বিস্তারিত দেখুন: ${plainQuestion}`}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setExpandedId(isExpanded ? null : index); }}
+      >
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#123944]/10 dark:bg-[#123944]/40 text-[#123944] dark:text-[#7fd4e6] border border-[#1b4e5b]/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
+            প্র
+          </div>
+          
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+              <h3 
+                className="text-base sm:text-lg font-serif text-gray-900 dark:text-white leading-relaxed font-bold pr-8" 
+                dangerouslySetInnerHTML={{ __html: fatwa.Question }} 
+              />
+              {isExpanded ? (
+                <ChevronUp className="text-[#174653] dark:text-[#deb37d] w-5 h-5 flex-shrink-0" />
+              ) : (
+                <ChevronDown className="text-gray-500 dark:text-white/50 group-hover:text-[#174653] dark:group-hover:text-[#deb37d] w-5 h-5 flex-shrink-0" />
+              )}
+            </div>
+            
+            {!isExpanded && (
+              <p className="text-sm text-gray-600 dark:text-gray-300 font-serif leading-relaxed mb-3 opacity-90">
+                {getAnswerPreview(fatwa.Answer, 130)}
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2 mt-1">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  selectCategory(fatwa.Category);
+                }}
+                aria-label={`${fatwa.Category} ক্যাটাগরির ফতোয়া দেখুন`}
+                className="bg-[#123944]/10 hover:bg-[#123944]/20 text-[#123944] dark:text-[#7fd4e6] dark:bg-[#123944]/30 border border-[#1b4e5b]/20 px-2.5 py-1 text-xs rounded-md font-semibold transition-colors cursor-pointer flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-[#123944]"
+              >
+                <span>{meta?.icon || '📌'}</span>
+                <span>{fatwa.Category}</span>
+              </button>
+
+              {fatwa.Subcategory && fatwa.Subcategory !== 'Unknown' && (
+                <span className="bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-white/70 px-2.5 py-1 text-xs rounded-md font-medium">
+                  {fatwa.Subcategory}
+                </span>
+              )}
+
+              {searchTerm && fatwa.searchScore !== undefined && (
+                <span className="text-[11px] px-2 py-0.5 rounded font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
+                  মিল: {toBengaliNumber(Math.max(15, Math.min(100, Math.round((fatwa.searchScore / Math.max(1, maxSearchScore)) * 100))))}%
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Answer Section */}
+      {isExpanded && (
+        <div className="border-t border-black/5 dark:border-[#1c434f] p-5 sm:p-8 bg-slate-50/50 dark:bg-[#07161c]">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
+              উ
+            </div>
+            
+            <div className="flex-1 overflow-hidden">
+              <div 
+                className="text-gray-800 dark:text-[#f2f2f2]/90 text-[15px] sm:text-base leading-relaxed mb-6 font-serif break-words"
+                dangerouslySetInnerHTML={{ __html: fatwa.Answer }} 
+              />
+              
+              <div className="border-t border-dashed border-gray-200 dark:border-[#1c434f] pt-4 flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-gray-600 dark:text-white/70 font-medium">
+                  মাসিক আল কাউসার প্রশ্নোত্তর ও ফতোয়া বিভাগ
+                </span>
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={handleCopyLink}
+                    className="text-xs text-gray-600 hover:text-[#174653] dark:text-gray-300 dark:hover:text-[#deb37d] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-[#174653] rounded"
+                    title="লিংক কপি করুন"
+                    aria-label="ফতোয়ার লিংক কপি করুন"
+                  >
+                    <LinkIcon className="w-3.5 h-3.5" />
+                    <span>লিংক কপি</span>
+                  </button>
+                  
+                  {fatwa.Link && (
+                    <a 
+                      href={fatwa.Link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-xs text-[#174653] dark:text-[#deb37d] hover:underline font-semibold flex items-center gap-1 focus:outline-none focus:ring-1 focus:ring-[#174653] rounded"
+                      aria-label="মাসিক আল কাউসার ওয়েবসাইট থেকে মূল ফতোয়া দেখুন"
+                    >
+                      <span>মূল ফতোয়া দেখুন</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+});
 
 export const FatwaView: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -87,6 +225,10 @@ export const FatwaView: React.FC = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedId, setExpandedId] = useState<number | null>(0);
+
+  const [pendingDeepLink, setPendingDeepLink] = useState<string | null>(null);
+  const [deepLinkScrolled, setDeepLinkScrolled] = useState(false);
+
   const [isPending, startTransition] = React.useTransition();
   const itemsPerPage = 10;
 
@@ -103,15 +245,14 @@ export const FatwaView: React.FC = () => {
         setFatwas(normalized);
         setIsLoading(false);
 
-        // Check if URL hash has a category (e.g. #category-নামায)
         if (typeof window !== 'undefined' && window.location.hash) {
           const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
           if (hash.startsWith('category-')) {
-            const catFromHash = hash.replace('category-', '');
-            setSelectedCategory(catFromHash);
+            setSelectedCategory(hash.replace('category-', ''));
           } else if (hash.startsWith('cat-')) {
-            const catFromHash = hash.replace('cat-', '');
-            setSelectedCategory(catFromHash);
+            setSelectedCategory(hash.replace('cat-', ''));
+          } else if (hash.startsWith('fatwa-')) {
+            setPendingDeepLink(hash.replace('fatwa-', ''));
           }
         }
       })
@@ -120,6 +261,10 @@ export const FatwaView: React.FC = () => {
         setIsLoading(false);
       });
   }, []);
+
+
+  // Static category list to prevent layout shift during initial loading
+  const DEFAULT_CATEGORIES = useMemo(() => Object.keys(CATEGORY_META), []);
 
   // Category counts
   const categoryCounts = useMemo(() => {
@@ -133,9 +278,12 @@ export const FatwaView: React.FC = () => {
 
   // Unique sorted categories
   const categories = useMemo(() => {
+    if (fatwas.length === 0) {
+      return ['All', ...DEFAULT_CATEGORIES];
+    }
     const cats = Object.keys(categoryCounts).sort((a, b) => (categoryCounts[b] || 0) - (categoryCounts[a] || 0));
     return ['All', ...cats];
-  }, [categoryCounts]);
+  }, [categoryCounts, fatwas.length, DEFAULT_CATEGORIES]);
 
   // Subcategory counts for selected category
   const subcategoryCounts = useMemo(() => {
@@ -265,6 +413,35 @@ export const FatwaView: React.FC = () => {
     return Math.max(...filteredFatwas.map(f => f.searchScore || 0));
   }, [filteredFatwas]);
 
+  // Handle deep link resolution
+  useEffect(() => {
+    if (pendingDeepLink && filteredFatwas.length > 0 && !deepLinkScrolled) {
+      const idx = filteredFatwas.findIndex(f => f.Link?.endsWith(`/${pendingDeepLink}/`));
+      if (idx !== -1) {
+        const page = Math.floor(idx / itemsPerPage) + 1;
+        setCurrentPage(page);
+        setExpandedId(idx % itemsPerPage);
+        setDeepLinkScrolled(true);
+        setTimeout(() => {
+          document.getElementById(`fatwa-${pendingDeepLink}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setPendingDeepLink(null);
+        }, 300);
+      } else {
+        // Find in all fatwas
+        const globalIdx = fatwas.findIndex(f => f.Link?.endsWith(`/${pendingDeepLink}/`));
+        if (globalIdx !== -1) {
+          const f = fatwas[globalIdx];
+          setSelectedCategory(f.Category);
+          setSelectedSubcategory(f.Subcategory);
+          setSearchInput('');
+          setSearchTerm('');
+          // Will re-run once filteredFatwas updates
+        }
+      }
+    }
+  }, [pendingDeepLink, filteredFatwas, fatwas, deepLinkScrolled]);
+
+
   // Pagination
   const totalPages = Math.ceil(filteredFatwas.length / itemsPerPage);
   const currentFatwas = filteredFatwas.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -301,15 +478,6 @@ export const FatwaView: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 md:px-12 py-32 relative z-20 flex flex-col items-center justify-center min-h-[50vh] animate-pulse">
-        <Loader2 className="w-10 h-10 text-[#c48c48] animate-spin mb-4" />
-        <p className="text-gray-600 dark:text-white/70 font-serif text-lg">মাসিক আল কাউসারের ফতোয়া ডাটাবেজ লোড করা হচ্ছে...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 py-8 md:py-14 relative z-20">
       
@@ -344,16 +512,16 @@ export const FatwaView: React.FC = () => {
           <div className="flex items-center gap-3 self-start md:self-auto bg-[#0a1e24]/75 backdrop-blur-md border border-[#205260]/60 px-5 py-3.5 rounded-xl shadow-inner">
             <div className="text-right">
               <span className="block text-2xl font-bold font-serif text-[#deb37d] leading-none">
-                {toBengaliNumber(fatwas.length)}
+                {isLoading ? '৪৮০০+' : toBengaliNumber(fatwas.length)}
               </span>
-              <span className="text-[11px] text-[#c2dce2] font-medium">সর্বমোট ফতোয়া</span>
+              <span className="text-[11px] text-[#d5eaf0] font-medium">সর্বমোট ফতোয়া</span>
             </div>
             <div className="w-px h-8 bg-white/15 mx-1"></div>
             <div>
               <span className="block text-2xl font-bold font-serif text-white leading-none">
-                {toBengaliNumber(categories.length - 1)}
+                {isLoading ? '১৫' : toBengaliNumber(categories.length - 1)}
               </span>
-              <span className="text-[11px] text-[#c2dce2] font-medium">ক্যাটাগরি</span>
+              <span className="text-[11px] text-[#d5eaf0] font-medium">ক্যাটাগরি</span>
             </div>
           </div>
         </div>
@@ -371,6 +539,7 @@ export const FatwaView: React.FC = () => {
           {selectedCategory !== 'All' && (
             <button
               onClick={() => selectCategory('All')}
+              aria-label="সকল ক্যাটাগরি দেখুন"
               className="text-xs text-[#174653] dark:text-[#deb37d] hover:underline flex items-center gap-1 font-semibold cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -385,6 +554,7 @@ export const FatwaView: React.FC = () => {
           {/* All Categories Button */}
           <button
             onClick={() => selectCategory('All')}
+            aria-label="সকল ফতোয়া ক্যাটাগরি"
             className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between ${
               selectedCategory === 'All'
                 ? 'bg-gradient-to-br from-[#0f2d36] to-[#184956] text-white border-[#2b7284] shadow-lg shadow-[#091a1f]/35 scale-[1.02]'
@@ -399,8 +569,8 @@ export const FatwaView: React.FC = () => {
               <h3 className={`font-serif font-bold text-sm sm:text-base leading-tight ${selectedCategory === 'All' ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
                 সকল ফতোয়া
               </h3>
-              <p className={`text-[11px] mt-1 font-medium ${selectedCategory === 'All' ? 'text-[#cde5ea]' : 'text-gray-500 dark:text-white/50'}`}>
-                {toBengaliNumber(fatwas.length)} টি ফতোয়া
+              <p className={`text-[11px] mt-1 font-medium ${selectedCategory === 'All' ? 'text-[#cde5ea]' : 'text-gray-600 dark:text-white/60'}`}>
+                {isLoading ? '৪৮০০+ টি ফতোয়া' : `${toBengaliNumber(fatwas.length)} টি ফতোয়া`}
               </p>
             </div>
           </button>
@@ -415,6 +585,7 @@ export const FatwaView: React.FC = () => {
               <button
                 key={cat}
                 onClick={() => selectCategory(cat)}
+                aria-label={`${cat} ক্যাটাগরির ফতোয়া`}
                 className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
                   isSelected
                     ? 'bg-gradient-to-br from-[#0f2d36] to-[#184956] text-white border-[#2b7284] shadow-lg shadow-[#091a1f]/35 scale-[1.02]'
@@ -433,9 +604,9 @@ export const FatwaView: React.FC = () => {
                     {cat}
                   </h3>
                   <p className={`text-[11px] mt-1 font-medium ${
-                    isSelected ? 'text-[#cde5ea]' : 'text-gray-500 dark:text-white/50'
+                    isSelected ? 'text-[#cde5ea]' : 'text-gray-600 dark:text-white/60'
                   }`}>
-                    {toBengaliNumber(count)} টি ফতোয়া
+                    {isLoading ? 'ফতোয়া তালিকা' : `${toBengaliNumber(count)} টি ফতোয়া`}
                   </p>
                 </div>
               </button>
@@ -466,6 +637,7 @@ export const FatwaView: React.FC = () => {
                       setCurrentPage(1);
                       setExpandedId(0);
                     }}
+                    aria-label={`${sub} উপ-বিভাগ`}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
                       isSubSelected
                         ? 'bg-[#123944] text-white shadow-sm font-bold border border-[#276e80]'
@@ -474,7 +646,7 @@ export const FatwaView: React.FC = () => {
                   >
                     <span>{sub === 'All' ? `সকল ${selectedCategory}` : sub}</span>
                     <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isSubSelected ? 'bg-black/20 text-[#deb37d]' : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/50'
+                      isSubSelected ? 'bg-black/20 text-[#deb37d]' : 'bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-white/60'
                     }`}>
                       {toBengaliNumber(subCount)}
                     </span>
@@ -493,7 +665,8 @@ export const FatwaView: React.FC = () => {
             <input 
               type="text" 
               placeholder="ফতোয়া বা মাসআলা অনুসন্ধান করুন... (যেমন: নামাযে ভুল, ওযু, সেহরি, কসর)" 
-              className="w-full pl-4 pr-14 py-3 bg-slate-50 dark:bg-[#08171c] border border-black/10 dark:border-[#1c434f] rounded-lg focus:border-[#205e70] dark:focus:border-[#2b7284] outline-none text-gray-900 dark:text-white transition-colors"
+              aria-label="ফতোয়া বা মাসআলা অনুসন্ধান করুন"
+              className="w-full pl-4 pr-14 py-3 bg-slate-50 dark:bg-[#08171c] border-2 border-black/10 dark:border-[#1c434f] rounded-lg focus:border-[#205e70] dark:focus:border-[#2b7284] focus:ring-4 focus:ring-[#205e70]/20 outline-none text-gray-900 dark:text-white transition-all shadow-sm"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => {
@@ -516,6 +689,7 @@ export const FatwaView: React.FC = () => {
               }}
               className="absolute right-1 top-1 bottom-1 px-4 bg-[#123944] hover:bg-[#194e5c] text-white rounded-md flex items-center justify-center transition-colors cursor-pointer shadow-sm"
               title="অনুসন্ধান করুন"
+              aria-label="অনুসন্ধান করুন"
             >
               <Search className="w-5 h-5" />
             </button>
@@ -529,11 +703,12 @@ export const FatwaView: React.FC = () => {
                 className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-[#08171c] border border-black/10 dark:border-[#1c434f] rounded-lg focus:border-[#205e70] outline-none text-gray-900 dark:text-white appearance-none cursor-pointer text-sm"
                 value={selectedCategory}
                 onChange={(e) => selectCategory(e.target.value)}
+                aria-label="ক্যাটাগরি নির্বাচন করুন"
               >
-                <option value="All">সব ক্যাটাগরি ({toBengaliNumber(fatwas.length)})</option>
+                <option value="All">সব ক্যাটাগরি ({isLoading ? '৪৮০০+' : toBengaliNumber(fatwas.length)})</option>
                 {categories.filter(c => c !== 'All').map(cat => (
                   <option key={cat} value={cat}>
-                    {cat} ({toBengaliNumber(categoryCounts[cat] || 0)})
+                    {cat} ({isLoading ? '--' : toBengaliNumber(categoryCounts[cat] || 0)})
                   </option>
                 ))}
               </select>
@@ -550,6 +725,7 @@ export const FatwaView: React.FC = () => {
                     setCurrentPage(1); 
                     setExpandedId(0);
                   }}
+                  aria-label="উপ-ক্যাটাগরি নির্বাচন করুন"
                 >
                   <option value="All">সব উপ-বিভাগ</option>
                   {subcategories.filter(s => s !== 'All').map(sub => (
@@ -566,6 +742,7 @@ export const FatwaView: React.FC = () => {
                 onClick={resetAllFilters}
                 className="px-4 py-3 border border-red-200 dark:border-red-900/40 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
                 title="ফিল্টার ক্লিয়ার করুন"
+                aria-label="ফিল্টার রিসেট করুন"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>রিসেট</span>
@@ -577,7 +754,7 @@ export const FatwaView: React.FC = () => {
         {/* Results Count & Current Active Filters Summary */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm">
           <div className="text-gray-600 dark:text-white/60 font-medium">
-            সর্বমোট <strong className="text-[#174653] dark:text-[#deb37d] font-bold">{toBengaliNumber(filteredFatwas.length)}</strong> টি ফতোয়া পাওয়া গেছে
+            সর্বমোট <strong className="text-[#174653] dark:text-[#deb37d] font-bold">{isLoading ? '...' : toBengaliNumber(filteredFatwas.length)}</strong> টি ফতোয়া পাওয়া গেছে
             {selectedCategory !== 'All' && (
               <span className="ml-2 inline-flex items-center gap-1 bg-[#123944]/10 dark:bg-[#123944]/40 text-[#123944] dark:text-[#7fd4e6] border border-[#1b4e5b]/20 px-2.5 py-0.5 rounded-full text-xs font-semibold">
                 ক্যাটাগরি: {selectedCategory}
@@ -596,7 +773,7 @@ export const FatwaView: React.FC = () => {
           </div>
 
           {totalPages > 1 && (
-            <div className="text-xs text-gray-400 dark:text-white/40 font-bold uppercase tracking-widest">
+            <div className="text-xs text-gray-500 dark:text-white/50 font-bold uppercase tracking-widest">
               পৃষ্ঠা {toBengaliNumber(currentPage)} / {toBengaliNumber(totalPages)}
             </div>
           )}
@@ -604,114 +781,37 @@ export const FatwaView: React.FC = () => {
 
         {/* Fatwa List */}
         <div className="space-y-5">
-          {currentFatwas.map((fatwa, index) => {
-            const isExpanded = expandedId === index;
-            const meta = CATEGORY_META[fatwa.Category];
-
-            return (
-              <div 
-                key={index} 
-                className="bg-white dark:bg-[#0c2027] border border-black/10 dark:border-[#1c434f] hover:border-[#2b7284]/60 rounded-xl overflow-hidden shadow-sm transition-all duration-200"
-              >
-                {/* Question Section */}
-                <div 
-                  className="p-5 sm:p-7 cursor-pointer hover:bg-slate-50/70 dark:hover:bg-[#0e2730]/50 transition-colors"
-                  onClick={() => setExpandedId(isExpanded ? null : index)}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#123944]/10 dark:bg-[#123944]/40 text-[#123944] dark:text-[#7fd4e6] border border-[#1b4e5b]/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
-                      প্র
-                    </div>
-                    
-                    <div className="flex-1">
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              selectCategory(fatwa.Category);
-                            }}
-                            className="bg-[#123944]/10 hover:bg-[#123944]/20 text-[#123944] dark:text-[#7fd4e6] dark:bg-[#123944]/30 border border-[#1b4e5b]/20 px-2.5 py-1 text-xs rounded-md font-semibold transition-colors cursor-pointer flex items-center gap-1"
-                          >
-                            <span>{meta?.icon || '📌'}</span>
-                            <span>{fatwa.Category}</span>
-                          </button>
-
-                          {fatwa.Subcategory && fatwa.Subcategory !== 'Unknown' && (
-                            <span className="bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/60 px-2.5 py-1 text-xs rounded-md">
-                              {fatwa.Subcategory}
-                            </span>
-                          )}
-
-                          {searchTerm && fatwa.searchScore !== undefined && (
-                            <span className="text-[11px] px-2 py-0.5 rounded font-bold bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20">
-                              মিল: {toBengaliNumber(Math.max(15, Math.min(100, Math.round((fatwa.searchScore / Math.max(1, maxSearchScore)) * 100))))}%
-                            </span>
-                          )}
-                        </div>
-
-                        {isExpanded ? (
-                          <ChevronUp className="text-[#174653] dark:text-[#deb37d] w-5 h-5 flex-shrink-0" />
-                        ) : (
-                          <ChevronDown className="text-gray-400 dark:text-white/40 group-hover:text-[#174653] dark:group-hover:text-[#deb37d] w-5 h-5 flex-shrink-0" />
-                        )}
-                      </div>
-                      
-                      <h3 
-                        className="text-base sm:text-lg font-serif text-gray-900 dark:text-white leading-relaxed font-medium" 
-                        dangerouslySetInnerHTML={{ __html: fatwa.Question }} 
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Answer Section */}
-                {isExpanded && (
-                  <div className="border-t border-black/5 dark:border-[#1c434f] p-5 sm:p-8 bg-slate-50/50 dark:bg-[#07161c]">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 sm:w-11 sm:h-11 bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-serif font-bold text-lg">
-                        উ
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div 
-                          className="text-gray-800 dark:text-[#f2f2f2]/90 text-[15px] sm:text-base leading-relaxed mb-6 font-serif"
-                          dangerouslySetInnerHTML={{ __html: fatwa.Answer }} 
-                        />
-                        
-                        <div className="border-t border-dashed border-gray-200 dark:border-[#1c434f] pt-4 flex flex-wrap items-center justify-between gap-3">
-                          <span className="text-xs text-gray-400 dark:text-white/40">
-                            মাসিক আল কাউসার প্রশ্নোত্তর ও ফতোয়া বিভাগ
-                          </span>
-                          {fatwa.Link && (
-                            <a 
-                              href={fatwa.Link} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-xs text-[#174653] dark:text-[#deb37d] hover:underline font-semibold flex items-center gap-1"
-                            >
-                              <span>মূল সংখ্যা দেখুন</span>
-                              <ChevronRight className="w-3.5 h-3.5" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <FatwaSkeletonCard key={`skeleton-${i}`} />
+            ))
+          ) : (
+            currentFatwas.map((fatwa, index) => (
+              <FatwaCard 
+                key={`${fatwa.Link}-${index}`}
+                fatwa={fatwa}
+                index={index}
+                isExpanded={expandedId === index}
+                setExpandedId={setExpandedId}
+                selectCategory={selectCategory}
+                meta={CATEGORY_META[fatwa.Category]}
+                searchTerm={searchTerm}
+                maxSearchScore={maxSearchScore}
+                toBengaliNumber={toBengaliNumber}
+              />
+            ))
+          )}
           
-          {currentFatwas.length === 0 && (
+          {!isLoading && currentFatwas.length === 0 && (
             <div className="text-center py-20 bg-white dark:bg-[#0c2027] border border-black/10 dark:border-[#1c434f] rounded-xl">
               <BookOpen className="w-12 h-12 text-gray-300 dark:text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-serif text-gray-700 dark:text-white/70 mb-2">কোনো ফতোয়া পাওয়া যায়নি</h3>
-              <p className="text-sm text-gray-500 dark:text-white/50 max-w-sm mx-auto mb-4">
+              <p className="text-sm text-gray-600 dark:text-white/60 max-w-sm mx-auto mb-4">
                 আপনার অনুসন্ধানের সাথে মিলে এমন কোনো ফতোয়া পাওয়া যায়নি। অন্য কোনো শব্দ দিয়ে অনুসন্ধান করুন।
               </p>
               <button
                 onClick={resetAllFilters}
+                aria-label="সকল ফতোয়া দেখুন"
                 className="px-5 py-2.5 bg-[#123944] text-white rounded-lg text-xs font-bold hover:bg-[#194e5c] transition-colors cursor-pointer"
               >
                 সব ফতোয়া দেখুন
@@ -721,7 +821,7 @@ export const FatwaView: React.FC = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-center gap-3 mt-12">
             <button 
               onClick={() => { 
@@ -732,6 +832,7 @@ export const FatwaView: React.FC = () => {
               disabled={currentPage === 1} 
               className="p-2.5 border border-black/10 dark:border-[#1c434f] rounded-lg hover:border-[#205e70] dark:hover:border-[#2b7284] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
               title="পূর্ববর্তী পৃষ্ঠা"
+              aria-label="পূর্ববর্তী পৃষ্ঠা"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -749,6 +850,7 @@ export const FatwaView: React.FC = () => {
               disabled={currentPage === totalPages} 
               className="p-2.5 border border-black/10 dark:border-[#1c434f] rounded-lg hover:border-[#205e70] dark:hover:border-[#2b7284] disabled:opacity-30 transition-colors text-gray-900 dark:text-white cursor-pointer disabled:cursor-not-allowed"
               title="পরবর্তী পৃষ্ঠা"
+              aria-label="পরবর্তী পৃষ্ঠা"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

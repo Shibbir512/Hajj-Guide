@@ -193,8 +193,9 @@ export const BookmarkView: React.FC<BookmarkViewProps> = ({
 
                           <button 
                             onClick={() => onToggleDuaBookmark(sp.prayer.scenario)}
-                            className="p-2 text-red-500 hover:text-red-700 bg-red-500/10 hover:bg-red-500/20 rounded-md transition-colors border border-red-500/20"
+                            className="p-2 text-red-500 hover:text-red-700 bg-red-500/10 hover:bg-red-500/20 rounded-md transition-colors border border-red-500/20 cursor-pointer"
                             title="বুকমার্ক থেকে মুছুন"
+                            aria-label="বুকমার্ক থেকে মুছুন"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -270,8 +271,9 @@ export const BookmarkView: React.FC<BookmarkViewProps> = ({
                             
                             <button
                               onClick={() => onToggleActionBookmark(sa.action.description)}
-                              className="text-red-500 hover:text-red-700 hover:bg-red-500/10 p-1.5 rounded-full transition-colors"
+                              className="text-red-500 hover:text-red-700 hover:bg-red-500/10 p-1.5 rounded-full transition-colors cursor-pointer"
                               title="বুকমার্ক থেকে মুছুন"
+                              aria-label="বুকমার্ক থেকে মুছুন"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
